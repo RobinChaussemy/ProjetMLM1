@@ -1,0 +1,9 @@
+Package: scindeR
+Title: data separation
+Version: 0.0.0.9000
+Authors@R: person("micha", "yanis", email = "yaya@gmail.com", role = c("aut", "cre"))
+Description: Package qui sert a scinder une data selon certains parametres. 
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3

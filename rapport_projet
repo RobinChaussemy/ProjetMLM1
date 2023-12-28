@@ -1,0 +1,56 @@
+---
+title: "Rapport Projet"
+author: "Yanis Micha"
+format:
+ html:
+    toc: true
+    toc-expand: 1
+    toc-depth: 3
+    toc-location: 'left'
+    toc-title: 'Sommaire'
+    number-sections: true
+    highlight-style: pygments
+---
+# Contexte du projet 
+Ce projet est réalisé dans le cadre de deux UE tout deux dirigés par Remi Drouilhet: l'UE "Logiciels spécialisés R" ainsi que l'UE "Outils de présentation et de recherche reproductible".  
+Le projet en lui même concernant surtout le premier UE et le deuxième UE porté plus sur ce rapport mais également la présentation quarto qui est apporté en supplément.  
+Ce projet a été réalisé par Robin Chaussemy et Yanis Micha.
+Il a été dans un premier temps été réalisé en commun, puis chaqu'un à réalisé une partie bien distincte qui, mis à bout à bout permettent le rendu final de ce projet, mais qui, prise individuellement, peuve également se suffire à elle même.  
+Ce projet est donc constitué de quatre principales parties:  
+
+- La recherche du projet en lui même.
+- L'analyse et le traitement des données choisies
+- La réalisation d'une interface et des composantes/fonctionnalités qui lui incombe.
+- la réalisation d'un apprentissage automatique sur le jeu de données.  
+
+(premiere predicition sur mort puis succes ,expliquer pourquoi,...)
+
+# Choix du projet
+## Theme
+## Choix du jeu de données
+## Problématique
+## Choix des langages
+# Analyse et traitement des données
+## Traitement des données
+### Gestion des données manquantes
+### Agrégations des données
+Tout ce qui est remodeler des variables pour réduire les modalités.  
+
+### Création/suppression de variable
+## Analyse statistique des données
+### Julia
+### R
+# Interface Shiny
+## Objectif de l'interface
+## Workflow de l'interface
+La disposition des éléments, les différentes fonctionnalités,etc... 
+
+## Création de packages
+# Apprentissage automatique
+## Python
+## Julia
+# Conclusion
+## Reflexion sur l'expérience du projet
+## les compétences acquises et les axes d'amélioration du projet
+## Conclusion générale
+

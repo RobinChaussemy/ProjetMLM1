@@ -1,0 +1,11 @@
+Package: compar
+Title: Comparaison de différents graphiques 
+Version: 0.0.0.9000
+Authors@R: 
+    person("micha", "yanis", , "yanismicha02@gmail.com", role = c("aut", "cre"))
+Description: Permet de comparer certains graphiques classiques à ceux de ggplot.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: ggplot2,ggridges,forcats,magrittr,dplyr,plotly,rlang

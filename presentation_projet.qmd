@@ -1,0 +1,200 @@
+---
+title: "Rapport Projet"
+author: "Yanis Micha"
+format: 
+  revealjs:
+    incremental: true
+    theme: blood 
+    logo: logo-uga.png
+    slide-number: true
+    menu: 
+      numbers: true
+    #embed-resources: true
+    transition: concave
+---
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(eval=TRUE,message = FALSE,warning = FALSE)
+
+library(kableExtra)
+library(compar)
+library(reactable)
+library(ggplot2)
+library(plotly)
+data <- read.csv("https://www.dropbox.com/scl/fi/d3v41yp6x9cxlqvueoet3/membersClean.csv?rlkey=v9xfdgu6oyubjur9rlu6k9eow&dl=1")
+```
+
+# Contexte du projet 
+## Contexte 
+Ce projet est constitué de quatre principales parties:  
+
+- La recherche du projet en lui même.
+- L'analyse et le traitement des données choisies
+- La réalisation d'une interface et des composantes/fonctionnalités qui lui incombe.
+- la réalisation d'un apprentissage automatique sur le jeu de données.  
+
+
+## Theme
+
+- Escalade/Alpinisme
+
+## Choix du jeu de données
+
+- `Himalayan Expeditions`: un jeu de données sur le recensement de l'ensemble des expéditions himalayennes depuis le début du 20eme siècle.
+- Prédiction sur `death`: une faible proportion de décès et variables limitées ont rendu l'apprentissage supervisé peu pertinent
+- Prédiction sur `success`: Transition vers jeu de données `expeditions`  mettant l'accent sur la variable success pour une prédiction plus pertinente.
+- Préparation du jeu de données expeditions en vue d'une analyse approfondie et de l'application d'algorithmes d'apprentissage supervisé.
+
+
+# Analyse et traitement des données 
+
+## DATA {.scrollable}
+
+::: {.panel-tabset}
+### Non Nettoyé
+
+- 76519 individus
+- 21 variables  
+
+Certaines variables qualitatives nominales avec plus de 300 modalités!
+Et de la redondance d'informations.  
+
+
+- plus de 3000 données manquantes  
+
+Concentrées principalement sur une variable: `Age`.
+
+### Nettoyé
+
+- 73000 individus
+- 13 variables   
+
+Agrégation des données avec diminution drastique des modalités pour certaines variables en gardant le maximum d'informations jugées pertinentes (cf `Expedition_role`).  
+Suppression des données/variables jugées non pertinentes (redondance d'information, non présence d'information,...).  
+
+
+### DATA 
+```{r,cache=TRUE,echo=FALSE,fig.height=4}
+
+style_success <- function(value) {
+      if (value) {
+        list(color = "darkgreen")
+      } 
+      else {
+        list(color = "darkred")
+      }
+}
+theme_dark <- reactableTheme(
+      color = "hsl(233, 9%, 87%)",
+      backgroundColor = "hsl(233, 9%, 19%)",
+      borderColor = "hsl(233, 9%, 22%)",
+      stripedColor = "hsl(233, 12%, 22%)",
+      highlightColor = "hsl(233, 12%, 24%)",
+      inputStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+      selectStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+      pageButtonHoverStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+      pageButtonActiveStyle = list(backgroundColor = "hsl(233, 9%, 28%)"))
+
+reactable(data[sample(1:73000,50),],
+        columns = list(success = colDef(align = "center", style = style_success 
+        ,filterable = FALSE)),fullWidth = TRUE,defaultColDef = colDef(style = "font-style: italic;"),searchable = TRUE,
+        filterable = TRUE,highlight = TRUE, showPageSizeOptions = TRUE,defaultPageSize = 10,pageSizeOptions = c(10, 50, 100),theme = theme_dark)
+```
+
+:::
+
+
+## Analyse statistique {.scrollable}
+- Visualisations sur graphiques: Julia avec `StatsPlots` et `PlotlyJS`, R avec `ggplot` et `plotly`.
+- Tests statistiques: Connaître les relations de nos différentes variables et les caractéristiques de nos variables.  
+**Exemple**:*Normalité de notre variable age selon le succès de l'expédition:*
+```{r,message=FALSE}
+#| echo: true
+#| output-location: slide
+shapiro1 <- shapiro.test(sample(data[data$success=="false","age"],5000))
+shapiro2 <- shapiro.test(sample(data[data$success=="true","age"],5000))
+
+student <- t.test(data$age~data$success,var.equal=T,alternative = "greater")
+plot_quanti("Density",data = data,variable_quanti1 = "age",modalites = "success",type = "ggplot")+
+  geom_text(aes(x = mean(age), y = 1.5, label = paste("p =", round(shapiro1$p.value,32)
+)),color="black", size = 5, vjust = 0)+
+  geom_text(aes(x = mean(age), y = 2.6, label = paste("p =", round(shapiro2$p.value,32)
+)),color="black", size = 5, vjust = 0)+
+  labs(
+    title = "Densité de la variable age selon les modalités de success (p-value de Shapiro-Wilk)"
+  )
+```
+
+
+# Apprentissage automatique
+## Python
+- Présentation robin
+
+## Julia
+- Présentation robin
+
+
+# Interface Shiny
+
+## Objectif de l'interface
+- **Interface pour l'apprentissage automatique ludique** : La création de notre interface vise à rendre l'apprentissage automatique accessible à tous, permettant à un utilisateur non initié de prédire le succès d'une expédition Himalayenne de manière ludique.
+- **Analyse statistique et comparaison de graphiques simplifiée** : Pour enrichir l'expérience, une partie de l'interface est dédiée à l'analyse statistique et à la comparaison de graphiques.
+
+## Structure de l'interface shiny
+
+- **DATA**: Visualisation du jeu de données + résumés statistiques
+- **Analyse**: trois onglets de visualisations selon des variables `quanti`,`quali` ou `quanti` et `quali`. 
+- **Prédictions**: un onglet de prédiction avec comparaison des prédictions entre `Julia` et `Python`.
+
+
+## Création de packages
+::: {.panel-tabset}
+### R
+- ScindeR: package permettant de récupérer une partie du dataframe selon le type des variables.
+- compaR: package sur la comparaison de graphiques basé sur les packages  `base`,`ggplot2`et `plotly`.
+
+### Julia
+- Partie de robin
+- Partie de robin
+
+### Python
+
+- Partie de robin
+- Partie de robin
+:::
+
+# Conclusion
+## les compétences acquises 
+::: {.panel-tabset}
+
+### Julia
+- Apprentissage du langage
+- Initiation au multiple dispatching
+- Apprentissage supervisé  
+
+
+### R
+- apprentissage de Shiny  et des différentes options
+- découverte de dash: non présenter mais apprentissage des bases.
+- Prise en main poussé des packages ggplot2 et plotly
+- Initiation aux packages permettant d'utliser d'autres langages tels que Julia et python au sein de R.  
+
+:::
+
+## axes d'amélioration du projet
+
+- Analyse des données: plus approfondie avec les connaissances actuelles.
+- Interface: meilleure gestion de l'esthetique, mise en place en amont d'un `workflow`.
+- packages: approfondissement et optimisation du code avec du `S3` pour les packages R.
+- Machine Learning: comparaison des modèles Julia et Python avec `tidyverse`.
+
+
+## Conclusion générale {.scrollable}
+Ce projet aura été d'une utilité formidable pour progresser, autant dans l'apprentissage de certains packages:
+
+- `ggplot2`,`plotly` et de leurs grammaire pour ce qui est de la visualisation statistique.
+- `shiny` pour ce qui est de la création d'interface.
+- `quarto` pour la création de rapport statistiques et de la présentation.
+- les packages permettant d'appeler du code Julia et Python au sein du language R.  
+- Mais également dans l'apprentissage d'un nouveau language `Julia` et de ses fonctionnalités.  
+
+# MERCI

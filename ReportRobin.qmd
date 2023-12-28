@@ -1,0 +1,511 @@
+---
+title: "Rapport Robin"
+format: html
+editor: visual
+---
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(eval=TRUE,message = FALSE,warning = FALSE)
+
+library(kableExtra)
+library(compar)
+library(reactable)
+library(ggplot2)
+library(plotly)
+
+```
+
+# Contexte du projet 
+Ce projet est réalisé dans le cadre de deux UE tout deux dirigés par Remi Drouilhet: l'UE "Logiciels spécialisés R" ainsi que l'UE "Outils de présentation et de recherche reproductible".  
+Le projet en lui même concernant surtout le premier UE et le deuxième UE porté plus sur ce rapport mais également la présentation quarto qui est apporté en supplément.  
+Ce projet a été réalisé par Robin Chaussemy et Yanis Micha.
+Il a été dans un premier temps été réalisé en commun, puis chaqu'un à réalisé une partie bien distincte qui, mis à bout à bout permettent le rendu final de ce projet, mais qui, prise individuellement, peuve également se suffire à elle même.  
+Ce projet est donc constitué de quatre principales parties:  
+
+- La recherche du projet en lui même.
+- L'analyse et le traitement des données choisies
+- La réalisation d'une interface et des composantes/fonctionnalités qui lui incombe.
+- la réalisation d'un apprentissage automatique sur le jeu de données.  
+
+
+# Choix du projet
+## Theme
+Notre première envie était de travailler avec des données relatives à l'escalade.  
+Après avoir eu l'idée de créer une carte interactive dans laquelle nous listerions tout les coins pour grimper avec leurs caractéristiques et la possibilité en se plaçant sur une carte de visualiser les endroits les plus proches pour escalader, nous avons préféré partir sur une autre idée: la prédiction sur un jeu de donnée relatif à l'escalade.  
+Après quelques recherche, les jeux de données les plus pertinents et intéressants concernant l'escalade étant le recensement des expéditions himalayennes.  
+
+## Choix du jeu de données
+Il n'existe pas de nombreux jeux de données concernant les expéditions himalayennes, et les jeux de données existants se recoupent entre eux et leurs différences ne sont pas significatives.  
+Nous avons d'abord choisi un jeu de données plus porté sur les morts lors des expéditions et leurs causes afin de pouvoir prédire cette dernière. En plus de ne pas être très joyeux, la proportion de mort parmi les expéditions himalayennes étant très faibles et avec des variables ne l'expliquant pas très bien, on s'est très vite rendu compte que cette apprentissage supervisé ne serait pas très pertinent. Nous nous sommes donc rabattus sur un autre jeu de données dont une variable nous intéressait plus pour de la prédiction: `success`,une variable indiquant le succès de l'expédition ou non du grimpeur.  
+Notre jeu de données `expeditions` est un format csv contenant 76519 individus et 21 variables.  
+Le jeu de données n'est pas du tout propre pour permettre une analyse poussée des données ainsi qu'un apprentissage supervisé. Une grande partie du travail à donc été de le nettoyer.[Traitement des données](#traitement-des-données)  
+
+## Problématique
+## Choix des langages
+Pour nous permettre une initiation au language `Julia`, a été décidé de procéder à l'entièreté du traitement des données (préprocessing) ainsi qu'à leurs analyse.  
+Pour ce qui est de l'interface, `Shiny`à été préféré pour sa facilité d'accès et de déploiement ainsi que sa facilité d'apprentissage pour des personnes initiés au language R contrairement à `dash` ou en encore `genie`.  Cependant, une comparaison d'utilisation de ses différentes possibilités d'interface avec leurs fonctionnalités, avantages et désavantages aurait été envisagé avec plus de temps (et sera bien entendu réalisé de notre côté).  
+Enfin, pour ce qui est du Machine Learning et de l'apprentissage supervisé, nous avons choisi de comparer Python pour lequel le ML nous était déjà familier avec `Sci-kit-learn`, avec  Julia.  
+Notre interface étant une application `shiny`, il nous a fallu pour ça utiliser des packages R permettant d'appeler ces languages au sein de notre application.  
+
+# Analyse et traitement des données
+```{r,cache=TRUE,echo=FALSE}
+data <- read.csv("https://www.dropbox.com/scl/fi/d3v41yp6x9cxlqvueoet3/membersClean.csv?rlkey=v9xfdgu6oyubjur9rlu6k9eow&dl=1")
+```
+
+
+## Traitement des données
+### Gestion des données manquantes
+Notre jeu de données comporte de nombreuse données manquantes principalement dans la variable `age`. L'âge d'un grimpeur étant une donnée qui nous est capitale pour prédire le succès, nous avons préféré évincer tout simplement toute ces données manquantes.  
+A la suite de cette suppression de données, notre jeu de données 
+comporte 73000 individus.  
+
+### Agrégations des données
+**peak_name**:  
+Le nombre de modalités de cette variable était de 391! En plus d'avoir un nombre de sommets très important, l'hymalaya est une chaine de montagne connu pour avoir de multiples arrêtes démultipliant ce nombre de sommets. Les modalité de notre variable étant alors constitué de toute ces arêtes.  
+*Exemple*: Annapurna étant un sommet constitué de 4 arêtes:  
+
+- Annapurna
+- Annapurna I Middle
+- Annapurna II
+- Annapurna III  
+
+Nous avons donc agréger toute ces arêtes en un seul sommet permettant de diminuer drastiquement le nombre de modalités.  
+Pour simplifier l'analyse, nous avons ensuite décider de ne garder que les 13 sommets avec le plus d'expéditions et de ranger tout les autres dans une nouvelle modalité: `autres`.  
+Notre variable ne comportant donc plus que 14 modalités.  
+<details>
+<summary style="font-weight: bold; color: #72afd2;">Tableau de contingence</summary>
+```{r}
+table(data$peak_name)
+```
+</details>
+
+
+**citizenship**:  
+Cette variable recense les nationalités de chaque individu.  Certains avait une double nationalité nous avons gardé que leur première nationalité. Pour les autres nous n'avons garder sur 213  pays que les 28 pays les plus représentés et de disposer les nationalités les moins représentés dans une variable `autres`.  
+<details>
+<summary style="font-weight: bold; color: #72afd2;">Tableau de contingence</summary>
+```{r}
+table(data$citizenship)
+```
+</details>
+  
+**expedition_role**
+Cette variable à été fastidieuse à traiter. Elle répertorie le rôle du grimpeur lors de l'expédition. cela peut aller du simple grimpeur, au leader, les guides de montagnes ou même les équipes de film.  
+En tout,c'est plus de 525 modalités.  Nous avons donc du faire le tri de ces différentes modalités et ne garder que celles qui ne nous paraissaient les plus pertinentes et comme pour `peak_name`et `citizenship` disposer les autres modalités dans une variable `autres`.  
+En regardant le  nombre d'occurence de chaque modalités mais également la pertinence des modalités on décide de ne garder plus que 5 modalités:  
+
+- `Leader` Le leader de la cordée.
+- `Climber` Un grimpeur classique.
+- `BaseCampStaff` Les médecins, les guides de montagnes, quelqu'un qui est payé pour accompagner la cordée.
+- `Movie/TV_team` un membre d'une équipe de TV ou de Film.
+- `Autres` tout les autres modalités.  
+
+<details>
+<summary style="font-weight: bold; color: #72afd2;">Tableau de contingence</summary>
+```{r}
+#code julia 
+#map_to_String(s) = length(s) == 2 ? "Autres" :  (occursin("Leader",s) || occursin("leader",s)) ? #"Leader" : SubString(s,1:3) == "Cli" ? "Climber" : SubString(s,1:2) == "BC" ? "BaseCampStaff" : #(occursin("Tv",s) || occursin("Film",s)) ? "Movie/TV_team" : "Autres"
+table(data$expedition_role)
+```
+</details>
+
+### Création/suppression de variable
+La variable age était en format String, nous l'avons donc naturellement transformé en un format int.  
+Nous avons également supprimé de nombreuses variables qui ne nous paraissaient soit pas pertinente , soit n'ajoutant pas d'informations supplémentaires (redondances d'informations):  
+
+- `death_cause` Cause de la mort. Variable intéréssante uniquement pour la prédiction de la mort de l'alpiniste. Evidémment cette variable n'étant renseigné que pour les individus ayant trouvés la mort, cette variable compte plus de 98% de valeurs manquantes.
+- `death_height_metres` Hauteur de la mort. Idem que pour death_cause.
+- `member_id` Numéro d'identification de l'individu. Il ne s'agit pas réellement d'une variable mais simplement d'une identification de l'individu qui ne nous intéresse pas.
+- `expedition_id` Numéro d'identification de l'expédition. Cette variable nous permet seulement de savoir le nombre de personnes par cordée ce qui en soit pourrait être un élément important du succès. Il nous faudrait pour cela créer une nouvelle variable qui pour chaque individus indique le nombre de personnes dans sa cordée (en moyenne, 7 individus par cordée).  
+- `highpoint_metres` Point le plus haut atteint par l'individu.  Variable intéressante mais quasiment 30 % de données manquantes ce qui la rend compliquée à traiter et à utiliser.
+- `injury_height_metres`  Hauteur de la blessure de l'individu. Suppose une blessure ce qui n'es tpas forcément le cas, ce qui donne également une variable avec plus de 98% de données manquantes.
+- `injury_type` Le type de la blessure. Même problème que pour la variable précédente.
+- `peak_id` Numéro d'identification du sommet. N'ajoute pas plus d'informations que `peak_name`.  
+
+
+### Présentation de notre DATA
+Une fois nettoyé notre jeu de données comporte alors 73000 individus (les alpinistes) pour 13 variables:  
+
+- `peak_name`: le nom du sommet qui est grimpé lors de l'expédition.
+- `year`: l'année de l'expédition
+- `season` : saison durant laquelle s'est déroulée l'expédition.
+- `sex` : le genre de l'individu (Homme ou Femme).
+- `age` : l'age de l'individu.
+- `citizenship` : la nationalité de l'individu.
+- `expedition_role` : le rôle dans la cordée de l'individu.
+- `hired` :  variable indicatrice indiquant si l'individu est embauché pour réalisé son expédition ou non.
+- `success` :  variable indicatrice indiquant si l'individu à réussi son expédition ou non.
+- `oxygen_used` :  variable indicatrice indiquant si l'individu à utilisé de l'oxygène.
+- `died` :  variable indicatrice indiquant si l'individu est décédé lor de l'expédition ou non.
+- `injured` :  variable indicatrice indiquant si l'individu s'est bléssé ou non lors de l'expedition.  
+
+**Le jeu de donnnées**:
+```{r,cache=TRUE,echo=FALSE}
+style_success <- function(value) {
+      if (value) {
+        list(color = "darkgreen")
+      } 
+      else {
+        list(color = "darkred")
+      }
+}
+theme_dark <- reactableTheme(
+      color = "hsl(233, 9%, 87%)",
+      backgroundColor = "hsl(233, 9%, 19%)",
+      borderColor = "hsl(233, 9%, 22%)",
+      stripedColor = "hsl(233, 12%, 22%)",
+      highlightColor = "hsl(233, 12%, 24%)",
+      inputStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+      selectStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+      pageButtonHoverStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+      pageButtonActiveStyle = list(backgroundColor = "hsl(233, 9%, 28%)"))
+
+reactable(data[sample(1:73000,50),],
+        columns = list(success = colDef(align = "center", style = style_success 
+        ,filterable = FALSE)),fullWidth = TRUE,defaultColDef = colDef(style = "font-style: italic;"),searchable = TRUE,
+        filterable = TRUE,highlight = TRUE, showPageSizeOptions = TRUE,defaultPageSize = 10,pageSizeOptions = c(10, 50, 100),theme = theme_dark)
+```
+
+
+
+## Analyse statistique des données
+Après traitement des données, nous avons réalisé une analyse statistique des données plus poussée. Cette analyse s'est réalisée principalement à l'aide de visualisation graphiques sur Julia et de tests statistiques sur R.  
+
+### Julia
+L'analyse sur Julia à été faite surtout dans l'objectif de se familiariser avec les possibilités offertes par ce language notamment avec `StatsPlots` mais également avec `PlotlyJS`.  
+
+### R
+Bien que l'analyse graphique ait été faites avec Julia, l'exploration des packages `ggplot` et `plotly` ont permis de pousser celle ci sur R.  
+En plus de cette dernière quelques tests statistiques ont été réalisés notamment dans l'objectif de tester la relation entre différentes variables.  
+**Exemple**:   
+Nous souhaitions savoir si l'âge  d'un individu dépendait selon le succès de l'expédition ou non. Pour espérer procéder à un test de student, nous regardons d'abord la distribution de nos deux groupes:
+```{r,echo=FALSE}
+plot_quanti("Density",data = data,variable_quanti1 = "age",modalites = "success",type = "ggplot")
+```
+<details>
+<summary style="font-weight: bold; color: #72afd2;">Voir le code</summary>
+```{r,eval=FALSE}
+plot_quanti("Density",data = data,variable_quanti1 = "age",modalites = "success",type = "ggplot")
+```
+</details>
+
+Les deux distributions on l'air de s'approcher d'une normale, on vérifie par un test de shapiro-wilk:  
+$\mathcal{H}_0$: La distribution suit une loi normale.  
+vs  
+$\mathcal{H}_1$: La distribution ne suit pas  une loi normale.  
+
+```{r,echo=FALSE}
+#la fonction shapiro ne prend pas d'échantillon de plus de 5000 donc je prend en aleatoire 5000 données
+test1 <-shapiro.test(sample(data[data$success=="false","age"],5000))
+test2 <-shapiro.test(sample(data[data$success=="true","age"],5000))
+test1
+```
+
+```{r,echo=FALSE}
+test2
+```
+les deux tests  rejettent $\mathcal{H}_0$ à un seuil bien plus bas que 1%, on peut sans trop de risque affirmer que nos deux groupes suivent une loi normale et donc procéder à un test de student.  
+
+Hypothèse:  
+$\mathcal{H}_0$: $\mu_1=\mu2 \Leftrightarrow$ "La moyenne d'age des individus est le même qu'il réussisse ou non l'expédition.    
+vs  
+$\mathcal{H}_1$: $\mu_1>\mu2 \Leftrightarrow$ "La moyenne d'age des individus est différente selon qu'il réussisse ou non l'expédition.   
+```{r,echo=FALSE}
+test <- t.test(data$age~data$success,var.equal=T,alternative = "greater")
+test
+```
+On rejette $\mathcal{H}_0$ à un seuil bien en dessous de 1%, on peut donc affirmer qu'en moyenne, les individus qui réussissent leur expéditions sont moins agés que ceux qui ne réussisse pas.  
+
+
+
+# Apprentissage automatique
+
+## Introduction
+
+Dans ce projet, nous avons choisi de comparer la mise en place de méthodes d'apprentissage supervisé en les implémentant en Julia et Python pour les évaluer. Les deux méthodes que nous avons choisies sont RandomForest (RF) et K-Nearest Neighbour (KNN). Notre choix s'est porté sur ces deux dernières car nous les avons étudiées l'année passée dans un cours d'introduction au machine learning. Un autre facteur qui nous a poussés à choisir ces deux algorithmes est qu'ils utilisent le même prétraitement pour les données à l'entrée de l'algorithme.
+
+## Présentation des modèles
+
+### OneHotEncode
+
+Le OneHotEncode (OHE) a pour objectif d'encoder les variables catégorielles en une matrice unitaire.
+
+#### Exemple
+
+On observe 4 individus en notant leur sexe et la nature de leur contrat de travail:
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">sex</span></th>
+    <th class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">Type de contrat de travail</span> </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">F</span></td>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">CDI</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">M</span></td>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">CDD</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">M</span></td>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">Intérimaire</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">F</span></td>
+    <td class="tg-0pky"><span style="font-weight:normal;font-style:normal;color:#000">CDI</span></td>
+  </tr>
+</tbody>
+</table>
+
+Après passage dans le OneHotEncoder, on obtient la matrice suivante:
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">sex_F</span></th>
+    <th class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">sex_M</span></th>
+    <th class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">TDCT_CDI</span></th>
+    <th class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">TDCT_CDD</span></th>
+    <th class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">TDCT_Intérimaire</span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+  </tr>
+  <tr>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">1</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+    <td class="tg-0lax"><span style="font-weight:normal;font-style:normal;color:#000">0</span></td>
+  </tr>
+</tbody>
+</table>
+
+Maintenant, nous pouvons appliquer des opérations mathématiques sur la matrice obtenue, comme calculer des effectifs de façon simple ou des distances entre les individus. Cependant, le OneHotEncoder présente un inconvénient majeur, car il augmente énormément le nombre de colonnes de la matrice de base si les variables contiennent beaucoup de catégories.
+
+### K-Nearest Neighbour
+
+Soit \(k \in 2 \mathbb{N} + 1\). Une fois notre matrice de données et l'individu passé dans le OHE, on calcule la distance de notre individu par rapport à chaque ligne de la matrice de données, et on obtient une nouvelle matrice appelée matrice de distance. On regarde les \(k\) distances les plus faibles pour identifier les \(k\) individus qui ressemblent le plus. On observe les \(k\) valeurs des données à prédire et on attribue par la suite à notre individu à prédire la classe qui le représente.
+
+### RandomForest
+
+Les forêts aléatoires reposent sur la construction d'arbres de décision de manière itérative. Elles se décomposent en plusieurs étapes:
+
+1. Création des arbres : La Random Forest commence par créer un ensemble d'arbres de décision. Chaque arbre est formé sur un sous-ensemble aléatoire des données d'entraînement.
+
+2. Prédiction des arbres : Une fois les arbres entraînés, une prédiction est obtenue en faisant voter tous les arbres. Pour une classification, chaque arbre "vote" pour une classe, et la classe qui obtient le plus de votes est choisie comme prédiction finale.
+
+3. Réduction de la corrélation : L'une des forces de la forêt aléatoire est de grandement limiter la corrélation, car chaque arbre est entraîné sur une petite partie du jeu de données.
+
+## Mise en place des méthodes
+
+### Python
+
+Python étant actuellement un langage de référence dans le monde du machine learning, il existe un package bien pratique contenant tous les outils nécessaires à l'apprentissage supervisé. Ce package est Scikit-learn. Pour bien fonctionner, il s'appuie sur le package NumPy qui permet de manipuler les objets mathématiques de base.
+
+### Difficultés
+
+Nous n'avons pas rencontré de difficultés particulières avec l'utilisation de ces packages en raison de notre familiarité avec ces manipulations. Le gros avantage de Python par rapport à Julia est que le langage est assez permissif en ce qui concerne la structure des données au niveau du prétraitement et que toutes les fonctionnalités sont incorporées dans un seul package, contrairement à Julia, comme nous le détaillerons par la suite.
+
+## Julia
+
+Julia étant un langage de programmation plus jeune que Python, la partie machine learning n'est pas simple à prendre en main en tant qu'utilisateur. Nous détaillerons par la suite les difficultés rencontrées. Cependant, le package MLJ.jl me paraît très prometteur car il essaye de réunir toutes les fonctionnalités de machine learning, tout comme le fait Scikit-learn (qui possède une version Julia qui n'est pas encore à la hauteur selon moi).
+
+
+
+### Difficultés
+
+#### OneHotEncoder
+
+Dans un premier temps, contrairement à Python, le OHE de MLJ.jl ne nous a pas permis de transformer un vecteur (individu à prédire) en utilisant la fonction transform, qui devrait normalement fonctionner après avoir adapté notre modèle aux données. Pour remédier à ce problème, nous avons choisi d'ajouter l'individu à prédire en dernière place des données à transformer via le OHE, en utilisant la fonction fit!. Une autre difficulté a été de mettre les dataframes au bon format pour pouvoir utiliser le OHE. Pour cela, nous avons utilisé la fonction coerce, qui permet de transformer les colonnes de type String64 en Multiclass, ce type étant pris en charge par notre OHE.
+
+#### K-Nearest Neighbour
+
+Pour utiliser la prédiction via un KNN en plus du package MLJ.jl, nous avons aussi utilisé NearestNeighbors. Pas de difficulté particulière, sauf un petit problème sur une transposition de matrice qui augmentait grandement le temps de calcul. On passait du calcul de normes dans \(\mathbb{R}^{60}\) à une norme dans \(\mathbb{R}^{7300}\), ce qui explique pourquoi la matrice de distance prenait presque 1h à être calculée.
+
+#### RandomForest
+
+La méthode qui nous aura pris le plus de temps à mettre en œuvre est le RandomForest, car le package MLJ propose plusieurs implantations de RandomForest provenant de packages variés. Dans un premier temps, nous avons testé avec l'interface de Scikit-learn, mais elle appelait Python en interne, ce qui perd de l'intérêt pour notre comparaison. Nous avons donc opté pour la librairie DecisionTree, qui était disponible dans les modèles. Cependant, nous avons rencontré quelques petites difficultés comme .fit et .predict qui sont définis dans les deux packages, ce qui produisait l'erreur "MethodError: no method matching" alors que l'on utilisait les mêmes types que ceux spécifiés dans la documentation. Pour remédier à ce problème, nous avons simplement remplacé .fit et .predict par DecisionTree.fit et DecisionTree.predict quand cela était nécessaire.
+
+# Interface Shiny
+## Objectif de l'interface
+La création de l'interface avait pour première mission d'implémenter l'apprentissage automatique réalisé sur notre jeu de données. Ceci pour permettre à un utilisateur lambda de pouvoir jouer en prédisant le succès ou non de sa potentielle expédition Himalayenne suivant moultes conditions.  
+L'idée principale était donc de pouvoir proposer à un non initié du Machine Learning une approche ludique de cette discipline en donnant une approximation somme toute relative de ses chances de réussite s'il venait à se lancer dans une expédition.  
+Notre jeu de données n'étant pas réellement pertinent pour permettre une prédiction digne de ce nom, cela nous paraissait tout de même intéressant de mettre en place cette idée.  
+Afin d'aller plus loin et de proposer également une expérience plus statistique, j'ai eu l'idée de dédié tout une partie de l'interface à l'analyse statistique et à la comparaison de graphiques.  
+Les graphiques sont des outils formidables permettant de visualiser les données et les "faire parler".Avec le temps et les différentes versions de R, de nombreux packages permettant la visualisation ont fait leurs apparitions, avec des graphiques plus jolis (bien que subjectif), plus lisibles, avec plus de fonctionnalités et toujours plus d'options. Cependant, tout ces nouveaux packages ont leurs grammaires bien à eux et il demande d'y consacrer un minimum de temps. Il est également pas toujours chose aisé de choisir le graphique qui nous convienne le mieux suivant ce que l'on recherche: d'un graphique efficace qui va à l'essentielle à un graphique bourré d'options jusqu'à en perdre la vue.  
+Mon idée est donc la suivante: et si, par le biais d'une interface, nous pourrions comparer plusieurs graphiques de différents packages avec seulement quelques cliques?
+C'est donc ce que je me suis efforcer d'essayer de faire.  
+Lorsque je parle des graphiques dans de nombreux packages, en plus de ceux implantés sur le package `base` sur R, on retrouve sur R surtout deux principaux packages (avec de nombreux packages subsidiaires et parfois complémentaires):  
+
+- `ggplot2`
+- `ploly` 
+
+Bien que `plotly` est implanté à partir de `ggplot2`, je les distinguerais tout le long de ce projet, étant donné que de nombreuses options sont possibles sur `ggplot2` et pas sur `plotly` et vice-versa.  Bien que `plotly`intègre une fonction permettant d'envelopper un graphique `ggplot` et de le transformer en graphique interactif, cette fonction ne fonctionne que pour une partie des graphiques.  L'implentation de `ggplotly` dans mon interface permettra à l'utilisateur de se rendre compte des avantages et des limites de cette fonction.  
+
+## Choix des graphiques
+Pour tenter de comparer ces 3 packages (`base`,`ggplot2`,`plotly`), j'ai d'abord décidé de faire une liste de graphiques types qui me semble particulièrement utile et "indispensable" pour une bonne analyse. Cette liste, bien entendu non exhaustive a été confectionné selon trois catégories:  
+
+- **Graphiques quantitatifs**: permettre de visualiser des données selon des variables quantitatives.
+- **Graphiques qualitifs**: permettre de visualiser des données selon des variables qualitatives.
+- **Graphique quantitatif/qualitatifs**: permettre de visualiser des données quantitatives/qualitatives, en fonction de données qualitatives.  
+
+J'ai ensuite crée un fichier `comparaison_graphiques.r` dans lequel je choisis plusieurs graphiques par catégories qui me semblent les plus pertinents pour une analyse de donnée standart. Dans ce fichier je regroupe par graphique les possibilités de chaque package.  
+Voici la liste des graphiques retenus:  
+
+### Graphique quantitatif
+#### Histogramme
+**Objectif**: Visualiser la distribution des valeurs d'une variable quantitative en regroupant les données en intervalles (bins).  
+**Avantages** : Donne une idée de la forme de la distribution, des tendances centrales et de la dispersion.  
+Permet également à l'utilisateur de pouvoir choisir le nombre de bins.  
+**Inconvénients** : Sensible au choix des bins, peut être difficile à interpréter si le nombre de bins est mal choisi.  
+
+L'intérêt de l'histogramme sera donc de pouvoir explorer la forme globale de la distribution.  
+
+#### Courbe de densité
+**Objectif** : Estimer la densité de probabilité de la distribution des données continues.  
+**Avantages** : Lisse la distribution, facilite la visualisation des modes et des tendances.  
+**Inconvénients** : Dépend du choix de la méthode d'estimation de la densité (il me semble que d'un package à l'autre il s'agit des mêmes estimations donc pas de réel différence entre eux sur ce point).  
+L'intérêt de la courbe de densité sera donc d'obtenir une représentation plus lisse de la distribution que celle de l'histogramme.  
+
+#### Scatterplot
+**Objectif** : Examiner la relation entre deux variables quantitatives.  
+**Avantages** : Permet de visualiser la dispersion des points et les relations entre les variables.  
+**Inconvénients** : Peut être difficile à interpréter avec un grand nombre de points, ne montre pas toujours la densité des points (d'où l'intérêt de méthodes un peu différentes et plus pertinentes utilisés pour `ggplot2`et `plotly`.
+L'intérêt du scatterplot sera donc surtout de pouvoir explorer la relation entre deux variables quantitatives.  
+La possibilité de visualiser ces données en les discriminant par rapport à une variable indicatrice est également prise en compte car très utile dans l'analyse de données.  
+
+#### boxplot
+**Objectif** : Résumer la distribution des valeurs en mettant en évidence les mesures de position (médiane, quartiles) et les valeurs aberrantes.  
+**Avantages** : Donne une vue rapide des mesures de dispersion, identifie les valeurs aberrantes.  
+**Inconvénients** : Ne montre pas la forme détaillée de la distribution, peut ne pas être aussi informatif avec des distributions asymétriques .  
+L'intérêt du boxplot sera donc de résumer la distribution et identifier les valeurs aberrantes. Dans le cas d'une distribution asymétrique, nous pouvons tout à fait procéder à un regroupement des données par intervalles (et donc avoir un résumé de la distribution et des valeurs aberrantes par intervalles).  
+
+### Graphiques qualitatifs
+#### barplot
+**Objectif** : Visualiser la distribution des catégories d'une variable qualitative en utilisant des barres.  
+**Avantages** : Facile à interpréter, montre la fréquence ou la proportion de chaque catégorie.  
+**Inconvénients** : Peut être moins informatif pour de nombreuses catégories.C'est là que la selection de modalités entre en jeu: une séléction des modalités directement intégré dans le graphique comme c'est le cas pour `plotly` est un vrai plus dans ce cas. Un tri (croissant ou décroissant) des barres peut également permettre une meilleure visibilité du graphique.   
+L'intérêt du barplot sera donc de montrer la fréquence ou la proportion de chaque catégorie d'une variable catégorielle.  
+
+#### mosaicplot
+**Objectif** : Représenter graphiquement les relations entre deux variables catégorielles en utilisant des zones rectangulaires proportionnelles aux fréquences.  
+**Avantages** : Montre les relations jointes entre deux variables catégorielles.  
+**Inconvénients** : Peut être complexe avec de nombreuses catégories et parfois illisible.  
+
+### Graphiques quantitatifs/qualitatifs
+#### Courbe de densité
+**Objectif**: regarder ici la densité d'une partie de notre jeu de données.    
+**Exemple**: Nous souhaitons voir si la densité de l'âge d'une personne en fonction du sexe suit une loi normale, nous allons donc représenter deux densités de la variable `age`: une pour les hommes et une pour les femmes.  
+
+#### barplot
+**Objectif**: analyser une variable qualitative ou quantitative, en fonction d'une autre variable qualitative.  
+L'intérêt sera donc de pouvoir visualiser sur une valeur précise de la première variable, quels sont les modalités les plus présentes de la deuxième variable.    
+**Exemple**: je regarde la catégorie professionnelle d'une personne.  Je voudrais savoir quelle est la proportion d'hommes et de femmes pour chaque catégories.  
+
+#### boxplot
+**Objectif**: représenter un résumé de la distribution et des valeurs aberrantes en fonction des modalités d'une variable catégorielle.  
+**Exemple**: Je souhaite savoir si la distribution de la taille d'une personne est semblable entre un homme et une femme.  
+
+#### Scatterplot
+**Objectif**: visualiser une relation entre deux variables quantitatives sur une partie de la population.  
+**Exemple**: Je souhaite regarder la relation entre la taille et le poids chez les Americains et comparer cette relation taille/poids avec celle chez les Français.  
+
+
+
+## Résumés statistiques
+En plus de cette comparaison des graphique, j'ai souhaité ajouter une simple visualisation des résumés statistiques pour permettre à l'utilisateur moyen d'avoir un premier aperçu de ses données.  
+
+### Variable quantitative
+En plus d'un simple résumé statistique de la variable, je propose à l'utilisateur de pouvoir discriminer cette dernière en fonction des modalités d'une variable catégorielle.  
+**Exemple**: Je souhaite voir les différents estimateurs statistiques (moyennes, médianes,...) de l'âge des personnes travaillant dans le domaine de la santé.  
+
+### Variable qualitative
+En plus des effectifs et de la fréquence de chaque modalité de la variable,j'ajoute les frequences cumulées (utile surtout pour les variables catégorielles ordinales).  
+
+
+## Workflow de l'interface
+La disposition des éléments, les différentes fonctionnalités,etc... 
+Comme toute personne qui apprend une nouvelle notion informatique (ici la réalisation d'une interface shiny), j'ai procédé par essai-erreur. L'avantage de ce procédé est qu'il m'a permis d'en apprendre énormément sur la réalisation d'une interface shiny. Cela m'a permis de découvrir pleins de packages utiles, que ce soit des packages inhérent à la modélisation de l'interface, à son design et bien entendu à l'analyse de données.  
+En revanche, ce procédé fait qu'aujourd'hui mon interface est largement perfectible, surtout en ce qui concerne le placement des objets shiny et les possibles interactions entre eux. Pour permettre une meilleure modélisation de mes interfaces dans le futur, je procèderais en amont à un worflow de mon interface (ce que je fais déja avec un autre projet).  
+
+### Structure de l'interface shiny
+L'interface se décompose en 3 principales parties:  
+
+- DATA
+- Analyse
+- Prédictions  
+
+#### DATA
+Dans cette partie, nous y retrouvons deux onglets, l'onglet permettant de visualiser le jeu de donnés en format assez classique, et un autre onglet inhérent aux résumés statistiques.  Pour ce dernier onglet, il reste pour le moment très minimaliste et fera l'objet d'améliorations (voir les axes d'améliorations en dernière partie).  
+Pour ce qui est du jeu de données, j'ai fait le choix d'utiliser le package `reactable` pour permettre de nombreuses personnalisations sur ce dernier.  
+`reactable` est un package permettant la création de tableaux interactifs. Les options qui ont étés retenus sont les suivantes:  
+
+- la recherche d'informations par variables: `searchable=TRUE`.  
+Pour chaque colonne dont l'option est activé, une case de recherche est mise à disposition.  
+**Exemple**: Je souhaite seulement regarder les expeditions himalayennes faites par les français, je cherche `france`dans la colonne `citizenship`.  
+- le tri du jeu de données: `filterable=TRUE`.  
+Permet de trier par ordre croissant ou décroissant le jeu de donnnée par rapport à la colonne spécifiée.  
+**Exemple**: je cherche à trié les expéditions himalayennes par âges croissant des grimpeurs pour regarder les expeditions des plus jeunes.
+- le design des cases: changer la couleur, la forme, le style d'une colonne en fonction de ses modalités.  
+**Exemple**: Pour permettre une meilleure visualisation de notre variable cible `success`, changer la couleur en fonction de la réussite ou non (<span style="color:green;">vert</span> pour TRUE, <span style="color:red;">**rouge**</span> pour FALSE).  
+D'autres options ont étés utilisés surtout dans un objectif d'esthétique mais cela ralentissait grandement le chargement du jeu de données lors du lancement de l'interface ce qui n'est pas très agréable. Pour contrer ça il faudrait faire cette mise en forme seulement pour les données affichées et non pour le dataset entier.  
+
+#### Analyse
+Trois onglets sont disponible à l'intérieur de celui-ci.  
+Ces trois onglets corresponds à la distinction des graphiques en trois catégories faites auparavant: graphiques quantitatives, graphiques qualitatifs et graphiques quantiatifs/qualitatifs.  
+Dans le menu de l'onglet `Analyse` se trouve des boutons radios `prettyRadioButtons` permettant de choisir le package utilisé pour faire le graphique: classique (pour `base`), ggplot et plotly.  
+Chaque onglet est disposé de la même manière: une partie `sidebarpanel`dans lequel l'utilisateur choisis le graphique qu'il souhaite tracer, les variables qu'il souhaite visualiser et quelques options supplémentaires (des `slider` pour changer les intervalles de certains graphiques,des variables à discriminer, etc.). Afin d'éviter un rafraichissement du graphique à chaque modification, et pour permettre à l'utilisateur de prendre son temps pour choisir toute ses options de graphiques, un boutton d'execution est mis à disposition. Pour tracer le graphique, il suffit d'appuyer sur ce boutton. Il suffit de switch entre les différents packages de graphique pour pouvoir les comparer. L'autre partie de l'onglet `mainpanel`étant dédié à l'affichage du graphique.  
+
+#### Prédictions
+Cet unique onglet contient le travail d'apprentissage supervisé réalisé sur notre jeu de données. Comme indiqué ci-dessus,notre objectif était de permettre à un utilisateur lambda de pouvoir prédire le succès de sa potentielle expédition himalayenne.  
+Pour cela,l'onglet est constitué d'un `sidebarpanel` dans lequel
+est posé plusieurs questions à l'utilisateur: son âge,sa nationalité, s'il souhaite grimper tout seul ou accompagné,ect.  
+Ces questions sont en fait relatifs aux différentes variables qui nous ont permis de procéder à l'apprentissage de notre jeu de données, afin de prédire le taux de succès d'une expédition en particulière.  
+Dans le `mainpanel` se constitue deux parties, une donnant les résultats provenant de l'apprentissage réalisé sur python et une autre sur Julia. Cela pour permettre de comparer l'apprentissage des modèles choisis sur les deux langages.  
+Enfin, il est également possible dans le menu de changer de modèle d'apprentissage en passant du modèle KNN à celui de randomforest.  
+
+#### Guide
+Afin de permettre à un n'importe qui de comprendre le fonctionnement de chaque onglet, un guide interactif a été ajouté à l'aide du package `cicerone`.  
+Ce package permet à l'aide d'un script r de préciser les emplacements de chaque input de l'interface, afin de guider au mieux l'utilisateur.  
+**Exemple**:  
+![Guide](Rapport_projet_files/guide.png)  

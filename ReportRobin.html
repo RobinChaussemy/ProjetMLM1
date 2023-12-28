@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Rapport Robin</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="ReportRobin_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ReportRobin_files/libs/quarto-html/quarto.js"></script>
+<script src="ReportRobin_files/libs/quarto-html/popper.min.js"></script>
+<script src="ReportRobin_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ReportRobin_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ReportRobin_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ReportRobin_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ReportRobin_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ReportRobin_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ReportRobin_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="ReportRobin_files/libs/core-js-2.5.3/shim.min.js"></script>
+<script src="ReportRobin_files/libs/react-18.2.0/react.min.js"></script>
+<script src="ReportRobin_files/libs/react-18.2.0/react-dom.min.js"></script>
+<script src="ReportRobin_files/libs/reactwidget-1.0.0/react-tools.js"></script>
+<script src="ReportRobin_files/libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="ReportRobin_files/libs/reactable-0.4.4/reactable.css" rel="stylesheet">
+<script src="ReportRobin_files/libs/reactable-binding-0.4.4/reactable.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Rapport Robin</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="contexte-du-projet" class="level1">
+<h1>Contexte du projet</h1>
+<p>Ce projet est réalisé dans le cadre de deux UE tout deux dirigés par Remi Drouilhet: l’UE “Logiciels spécialisés R” ainsi que l’UE “Outils de présentation et de recherche reproductible”.<br>
+Le projet en lui même concernant surtout le premier UE et le deuxième UE porté plus sur ce rapport mais également la présentation quarto qui est apporté en supplément.<br>
+Ce projet a été réalisé par Robin Chaussemy et Yanis Micha. Il a été dans un premier temps été réalisé en commun, puis chaqu’un à réalisé une partie bien distincte qui, mis à bout à bout permettent le rendu final de ce projet, mais qui, prise individuellement, peuve également se suffire à elle même.<br>
+Ce projet est donc constitué de quatre principales parties:</p>
+<ul>
+<li>La recherche du projet en lui même.</li>
+<li>L’analyse et le traitement des données choisies</li>
+<li>La réalisation d’une interface et des composantes/fonctionnalités qui lui incombe.</li>
+<li>la réalisation d’un apprentissage automatique sur le jeu de données.</li>
+</ul>
+</section>
+<section id="choix-du-projet" class="level1">
+<h1>Choix du projet</h1>
+<section id="theme" class="level2">
+<h2 class="anchored" data-anchor-id="theme">Theme</h2>
+<p>Notre première envie était de travailler avec des données relatives à l’escalade.<br>
+Après avoir eu l’idée de créer une carte interactive dans laquelle nous listerions tout les coins pour grimper avec leurs caractéristiques et la possibilité en se plaçant sur une carte de visualiser les endroits les plus proches pour escalader, nous avons préféré partir sur une autre idée: la prédiction sur un jeu de donnée relatif à l’escalade.<br>
+Après quelques recherche, les jeux de données les plus pertinents et intéressants concernant l’escalade étant le recensement des expéditions himalayennes.</p>
+</section>
+<section id="choix-du-jeu-de-données" class="level2">
+<h2 class="anchored" data-anchor-id="choix-du-jeu-de-données">Choix du jeu de données</h2>
+<p>Il n’existe pas de nombreux jeux de données concernant les expéditions himalayennes, et les jeux de données existants se recoupent entre eux et leurs différences ne sont pas significatives.<br>
+Nous avons d’abord choisi un jeu de données plus porté sur les morts lors des expéditions et leurs causes afin de pouvoir prédire cette dernière. En plus de ne pas être très joyeux, la proportion de mort parmi les expéditions himalayennes étant très faibles et avec des variables ne l’expliquant pas très bien, on s’est très vite rendu compte que cette apprentissage supervisé ne serait pas très pertinent. Nous nous sommes donc rabattus sur un autre jeu de données dont une variable nous intéressait plus pour de la prédiction: <code>success</code>,une variable indiquant le succès de l’expédition ou non du grimpeur.<br>
+Notre jeu de données <code>expeditions</code> est un format csv contenant 76519 individus et 21 variables.<br>
+Le jeu de données n’est pas du tout propre pour permettre une analyse poussée des données ainsi qu’un apprentissage supervisé. Une grande partie du travail à donc été de le nettoyer.<a href="#traitement-des-données">Traitement des données</a></p>
+</section>
+<section id="problématique" class="level2">
+<h2 class="anchored" data-anchor-id="problématique">Problématique</h2>
+</section>
+<section id="choix-des-langages" class="level2">
+<h2 class="anchored" data-anchor-id="choix-des-langages">Choix des langages</h2>
+<p>Pour nous permettre une initiation au language <code>Julia</code>, a été décidé de procéder à l’entièreté du traitement des données (préprocessing) ainsi qu’à leurs analyse.<br>
+Pour ce qui est de l’interface, <code>Shiny</code>à été préféré pour sa facilité d’accès et de déploiement ainsi que sa facilité d’apprentissage pour des personnes initiés au language R contrairement à <code>dash</code> ou en encore <code>genie</code>. Cependant, une comparaison d’utilisation de ses différentes possibilités d’interface avec leurs fonctionnalités, avantages et désavantages aurait été envisagé avec plus de temps (et sera bien entendu réalisé de notre côté).<br>
+Enfin, pour ce qui est du Machine Learning et de l’apprentissage supervisé, nous avons choisi de comparer Python pour lequel le ML nous était déjà familier avec <code>Sci-kit-learn</code>, avec Julia.<br>
+Notre interface étant une application <code>shiny</code>, il nous a fallu pour ça utiliser des packages R permettant d’appeler ces languages au sein de notre application.</p>
+</section>
+</section>
+<section id="analyse-et-traitement-des-données" class="level1">
+<h1>Analyse et traitement des données</h1>
+<section id="traitement-des-données" class="level2">
+<h2 class="anchored" data-anchor-id="traitement-des-données">Traitement des données</h2>
+<section id="gestion-des-données-manquantes" class="level3">
+<h3 class="anchored" data-anchor-id="gestion-des-données-manquantes">Gestion des données manquantes</h3>
+<p>Notre jeu de données comporte de nombreuse données manquantes principalement dans la variable <code>age</code>. L’âge d’un grimpeur étant une donnée qui nous est capitale pour prédire le succès, nous avons préféré évincer tout simplement toute ces données manquantes.<br>
+A la suite de cette suppression de données, notre jeu de données comporte 73000 individus.</p>
+</section>
+<section id="agrégations-des-données" class="level3">
+<h3 class="anchored" data-anchor-id="agrégations-des-données">Agrégations des données</h3>
+<p><strong>peak_name</strong>:<br>
+Le nombre de modalités de cette variable était de 391! En plus d’avoir un nombre de sommets très important, l’hymalaya est une chaine de montagne connu pour avoir de multiples arrêtes démultipliant ce nombre de sommets. Les modalité de notre variable étant alors constitué de toute ces arêtes.<br>
+<em>Exemple</em>: Annapurna étant un sommet constitué de 4 arêtes:</p>
+<ul>
+<li>Annapurna</li>
+<li>Annapurna I Middle</li>
+<li>Annapurna II</li>
+<li>Annapurna III</li>
+</ul>
+Nous avons donc agréger toute ces arêtes en un seul sommet permettant de diminuer drastiquement le nombre de modalités.<br>
+Pour simplifier l’analyse, nous avons ensuite décider de ne garder que les 13 sommets avec le plus d’expéditions et de ranger tout les autres dans une nouvelle modalité: <code>autres</code>.<br>
+Notre variable ne comportant donc plus que 14 modalités.<br>
+
+<details>
+<summary style="font-weight: bold; color: #72afd2;">
+Tableau de contingence
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data<span class="sc">$</span>peak_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Ama Dablam  Annapurna     Autres   Baruntse        Cho Dhaulagiri    Everest 
+      8235       3129      12454       2124       8790       2978      20994 
+    Ganesh   Kangchen     Lhotse     Makalu    Manaslu     Pumori    Sharphu 
+       553       2075       2615       2631       4610       1724         88 </code></pre>
+</div>
+</div>
+</details>
+<strong>citizenship</strong>:<br>
+Cette variable recense les nationalités de chaque individu. Certains avait une double nationalité nous avons gardé que leur première nationalité. Pour les autres nous n’avons garder sur 213 pays que les 28 pays les plus représentés et de disposer les nationalités les moins représentés dans une variable <code>autres</code>.<br>
+
+<details>
+<summary style="font-weight: bold; color: #72afd2;">
+Tableau de contingence
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data<span class="sc">$</span>citizenship)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Australia        Austria         Autres        Belgium         Canada 
+          1430           2098           4955            460           1123 
+         China Czech Republic Czechoslovakia         France        Germany 
+          1933            649            355           4508           3415 
+         India           Iran          Italy          Japan          Nepal 
+          1770            327           2720           6199          14388 
+   Netherlands    New Zealand         Norway         Poland         Russia 
+           732            793            568           1382           1326 
+       S Korea       Slovenia          Spain         Sweden    Switzerland 
+          2885            564           3305            357           2420 
+            UK        Ukraine            USA     Yugoslavia 
+          5116            336           6396            490 </code></pre>
+</div>
+</div>
+</details>
+<p><strong>expedition_role</strong> Cette variable à été fastidieuse à traiter. Elle répertorie le rôle du grimpeur lors de l’expédition. cela peut aller du simple grimpeur, au leader, les guides de montagnes ou même les équipes de film.<br>
+En tout,c’est plus de 525 modalités. Nous avons donc du faire le tri de ces différentes modalités et ne garder que celles qui ne nous paraissaient les plus pertinentes et comme pour <code>peak_name</code>et <code>citizenship</code> disposer les autres modalités dans une variable <code>autres</code>.<br>
+En regardant le nombre d’occurence de chaque modalités mais également la pertinence des modalités on décide de ne garder plus que 5 modalités:</p>
+<ul>
+<li><code>Leader</code> Le leader de la cordée.</li>
+<li><code>Climber</code> Un grimpeur classique.</li>
+<li><code>BaseCampStaff</code> Les médecins, les guides de montagnes, quelqu’un qui est payé pour accompagner la cordée.</li>
+<li><code>Movie/TV_team</code> un membre d’une équipe de TV ou de Film.</li>
+<li><code>Autres</code> tout les autres modalités.</li>
+</ul>
+<details>
+<summary style="font-weight: bold; color: #72afd2;">
+Tableau de contingence
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#code julia </span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#map_to_String(s) = length(s) == 2 ? "Autres" :  (occursin("Leader",s) || occursin("leader",s)) ? #"Leader" : SubString(s,1:3) == "Cli" ? "Climber" : SubString(s,1:2) == "BC" ? "BaseCampStaff" : #(occursin("Tv",s) || occursin("Film",s)) ? "Movie/TV_team" : "Autres"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(data<span class="sc">$</span>expedition_role)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+       Autres BaseCampStaff       Climber        Leader Movie/TV_team 
+        16447           452         43928         12013           160 </code></pre>
+</div>
+</div>
+</details>
+</section>
+<section id="créationsuppression-de-variable" class="level3">
+<h3 class="anchored" data-anchor-id="créationsuppression-de-variable">Création/suppression de variable</h3>
+<p>La variable age était en format String, nous l’avons donc naturellement transformé en un format int.<br>
+Nous avons également supprimé de nombreuses variables qui ne nous paraissaient soit pas pertinente , soit n’ajoutant pas d’informations supplémentaires (redondances d’informations):</p>
+<ul>
+<li><code>death_cause</code> Cause de la mort. Variable intéréssante uniquement pour la prédiction de la mort de l’alpiniste. Evidémment cette variable n’étant renseigné que pour les individus ayant trouvés la mort, cette variable compte plus de 98% de valeurs manquantes.</li>
+<li><code>death_height_metres</code> Hauteur de la mort. Idem que pour death_cause.</li>
+<li><code>member_id</code> Numéro d’identification de l’individu. Il ne s’agit pas réellement d’une variable mais simplement d’une identification de l’individu qui ne nous intéresse pas.</li>
+<li><code>expedition_id</code> Numéro d’identification de l’expédition. Cette variable nous permet seulement de savoir le nombre de personnes par cordée ce qui en soit pourrait être un élément important du succès. Il nous faudrait pour cela créer une nouvelle variable qui pour chaque individus indique le nombre de personnes dans sa cordée (en moyenne, 7 individus par cordée).<br>
+</li>
+<li><code>highpoint_metres</code> Point le plus haut atteint par l’individu. Variable intéressante mais quasiment 30 % de données manquantes ce qui la rend compliquée à traiter et à utiliser.</li>
+<li><code>injury_height_metres</code> Hauteur de la blessure de l’individu. Suppose une blessure ce qui n’es tpas forcément le cas, ce qui donne également une variable avec plus de 98% de données manquantes.</li>
+<li><code>injury_type</code> Le type de la blessure. Même problème que pour la variable précédente.</li>
+<li><code>peak_id</code> Numéro d’identification du sommet. N’ajoute pas plus d’informations que <code>peak_name</code>.</li>
+</ul>
+</section>
+<section id="présentation-de-notre-data" class="level3">
+<h3 class="anchored" data-anchor-id="présentation-de-notre-data">Présentation de notre DATA</h3>
+<p>Une fois nettoyé notre jeu de données comporte alors 73000 individus (les alpinistes) pour 13 variables:</p>
+<ul>
+<li><code>peak_name</code>: le nom du sommet qui est grimpé lors de l’expédition.</li>
+<li><code>year</code>: l’année de l’expédition</li>
+<li><code>season</code> : saison durant laquelle s’est déroulée l’expédition.</li>
+<li><code>sex</code> : le genre de l’individu (Homme ou Femme).</li>
+<li><code>age</code> : l’age de l’individu.</li>
+<li><code>citizenship</code> : la nationalité de l’individu.</li>
+<li><code>expedition_role</code> : le rôle dans la cordée de l’individu.</li>
+<li><code>hired</code> : variable indicatrice indiquant si l’individu est embauché pour réalisé son expédition ou non.</li>
+<li><code>success</code> : variable indicatrice indiquant si l’individu à réussi son expédition ou non.</li>
+<li><code>oxygen_used</code> : variable indicatrice indiquant si l’individu à utilisé de l’oxygène.</li>
+<li><code>died</code> : variable indicatrice indiquant si l’individu est décédé lor de l’expédition ou non.</li>
+<li><code>injured</code> : variable indicatrice indiquant si l’individu s’est bléssé ou non lors de l’expedition.</li>
+</ul>
+<p><strong>Le jeu de donnnées</strong>:</p>
+<div class="cell" data-hash="ReportRobin_cache/html/unnamed-chunk-6_ce7755954897322ede88d57df7113990">
+<div class="cell-output-display">
+
+<div class="reactable html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-621b6891865a11013735" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-621b6891865a11013735">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"peak_name":["Everest","Ama Dablam","Everest","Annapurna","Autres","Manaslu","Makalu","Everest","Cho","Autres","Cho","Manaslu","Dhaulagiri","Everest","Autres","Autres","Annapurna","Everest","Annapurna","Makalu","Ama Dablam","Ama Dablam","Cho","Autres","Cho","Everest","Ama Dablam","Ama Dablam","Everest","Cho","Everest","Annapurna","Everest","Cho","Cho","Cho","Baruntse","Ama Dablam","Baruntse","Cho","Autres","Lhotse","Cho","Everest","Cho","Makalu","Autres","Ama Dablam","Baruntse","Everest"],"year":[1983,1992,2002,1992,1982,1982,2014,1988,2014,1980,2005,2008,1987,1985,2014,1954,1996,2006,1992,2008,1996,2007,1998,2013,2007,1986,1993,1983,1987,2001,2003,2007,2018,2004,1981,1992,2011,2014,1999,1983,2010,1990,2001,2012,1997,2001,1986,2014,2010,2004],"season":["Spring","Autumn","Spring","Autumn","Spring","Autumn","Spring","Spring","Autumn","Autumn","Autumn","Autumn","Spring","Spring","Spring","Autumn","Autumn","Spring","Autumn","Spring","Winter","Autumn","Spring","Autumn","Autumn","Summer","Autumn","Spring","Autumn","Autumn","Spring","Spring","Spring","Autumn","Spring","Autumn","Spring","Autumn","Autumn","Autumn","Spring","Autumn","Autumn","Spring","Spring","Spring","Spring","Autumn","Autumn","Spring"],"sex":["M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","F","M","F","M","M","M","M","M","M","M","M","M","M","M","M","M","M","M","F","M","M"],"age":[41,25,34,47,68,25,45,22,43,28,37,58,34,53,53,30,39,23,35,39,26,59,53,48,22,38,24,33,26,41,31,43,45,33,39,36,29,38,42,26,44,27,29,35,35,41,46,46,66,31],"citizenship":["USA","Spain","Autres","Slovenia","Japan","France","Nepal","China","Russia","Japan","Austria","France","Japan","Austria","S Korea","New Zealand","Autres","Nepal","Japan","UK","S Korea","USA","Austria","Switzerland","France","Switzerland","Germany","Belgium","Nepal","USA","Japan","USA","China","Nepal","Japan","Spain","Nepal","Poland","Italy","Germany","Nepal","Spain","S Korea","Autres","Nepal","Iran","Germany","USA","USA","Italy"],"expedition_role":["Autres","Climber","Climber","Climber","Climber","Climber","Autres","Climber","Climber","Climber","Climber","Climber","Climber","Movie/TV_team","Climber","Leader","Climber","Autres","Climber","Leader","Climber","Climber","Climber","Climber","Climber","Climber","Climber","Autres","Autres","Climber","Climber","Leader","Climber","Autres","Climber","Climber","Autres","Climber","Climber","Climber","Autres","Climber","Climber","Climber","Autres","Leader","Climber","Movie/TV_team","Climber","Climber"],"hired":["false","false","false","false","false","false","true","false","false","false","false","false","false","false","false","false","false","true","false","false","false","false","false","false","false","false","false","false","true","false","false","false","false","true","false","false","true","false","false","false","true","false","false","false","true","false","false","false","false","false"],"success":["false","false","true","false","false","false","false","false","true","true","true","true","false","false","false","false","false","true","false","false","false","false","true","true","false","true","true","false","false","false","false","false","true","true","false","false","false","false","false","true","false","false","true","true","true","false","false","false","false","false"],"solo":["false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false"],"oxygen_used":["true","false","true","false","false","false","false","true","true","false","false","false","false","false","false","false","false","true","false","true","false","false","false","false","false","false","false","false","false","false","false","false","true","false","false","false","false","false","false","false","false","false","false","true","false","false","false","false","false","false"],"died":["false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","true","false","false","false"],"injured":["false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false","false"]},"columns":[{"id":"peak_name","name":"peak_name","type":"character","style":{"font-style":"italic"}},{"id":"year","name":"year","type":"numeric","style":{"font-style":"italic"}},{"id":"season","name":"season","type":"character","style":{"font-style":"italic"}},{"id":"sex","name":"sex","type":"character","style":{"font-style":"italic"}},{"id":"age","name":"age","type":"numeric","style":{"font-style":"italic"}},{"id":"citizenship","name":"citizenship","type":"character","style":{"font-style":"italic"}},{"id":"expedition_role","name":"expedition_role","type":"character","style":{"font-style":"italic"}},{"id":"hired","name":"hired","type":"character","style":{"font-style":"italic"}},{"id":"success","name":"success","type":"character","style":[{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkgreen"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"},{"color":"darkred"}],"filterable":false,"align":"center"},{"id":"solo","name":"solo","type":"character","style":{"font-style":"italic"}},{"id":"oxygen_used","name":"oxygen_used","type":"character","style":{"font-style":"italic"}},{"id":"died","name":"died","type":"character","style":{"font-style":"italic"}},{"id":"injured","name":"injured","type":"character","style":{"font-style":"italic"}}],"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"pageSizeOptions":[10,50,100],"highlight":true,"theme":{"color":"hsl(233, 9%, 87%)","backgroundColor":"hsl(233, 9%, 19%)","borderColor":"hsl(233, 9%, 22%)","stripedColor":"hsl(233, 12%, 22%)","highlightColor":"hsl(233, 12%, 24%)","inputStyle":{"backgroundColor":"hsl(233, 9%, 25%)"},"selectStyle":{"backgroundColor":"hsl(233, 9%, 25%)"},"pageButtonHoverStyle":{"backgroundColor":"hsl(233, 9%, 25%)"},"pageButtonActiveStyle":{"backgroundColor":"hsl(233, 9%, 28%)"}},"dataKey":"a835b4a1147c801e7e9424ef3353fc79"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+<section id="analyse-statistique-des-données" class="level2">
+<h2 class="anchored" data-anchor-id="analyse-statistique-des-données">Analyse statistique des données</h2>
+<p>Après traitement des données, nous avons réalisé une analyse statistique des données plus poussée. Cette analyse s’est réalisée principalement à l’aide de visualisation graphiques sur Julia et de tests statistiques sur R.</p>
+<section id="julia" class="level3">
+<h3 class="anchored" data-anchor-id="julia">Julia</h3>
+<p>L’analyse sur Julia à été faite surtout dans l’objectif de se familiariser avec les possibilités offertes par ce language notamment avec <code>StatsPlots</code> mais également avec <code>PlotlyJS</code>.</p>
+</section>
+<section id="r" class="level3">
+<h3 class="anchored" data-anchor-id="r">R</h3>
+<p>Bien que l’analyse graphique ait été faites avec Julia, l’exploration des packages <code>ggplot</code> et <code>plotly</code> ont permis de pousser celle ci sur R.<br>
+En plus de cette dernière quelques tests statistiques ont été réalisés notamment dans l’objectif de tester la relation entre différentes variables.<br>
+<strong>Exemple</strong>:<br>
+Nous souhaitions savoir si l’âge d’un individu dépendait selon le succès de l’expédition ou non. Pour espérer procéder à un test de student, nous regardons d’abord la distribution de nos deux groupes:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="ReportRobin_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<details>
+<summary style="font-weight: bold; color: #72afd2;">
+Voir le code
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_quanti</span>(<span class="st">"Density"</span>,<span class="at">data =</span> data,<span class="at">variable_quanti1 =</span> <span class="st">"age"</span>,<span class="at">modalites =</span> <span class="st">"success"</span>,<span class="at">type =</span> <span class="st">"ggplot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<p>Les deux distributions on l’air de s’approcher d’une normale, on vérifie par un test de shapiro-wilk:<br>
+<span class="math inline">\(\mathcal{H}_0\)</span>: La distribution suit une loi normale.<br>
+vs<br>
+<span class="math inline">\(\mathcal{H}_1\)</span>: La distribution ne suit pas une loi normale.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  sample(data[data$success == "false", "age"], 5000)
+W = 0.9665, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  sample(data[data$success == "true", "age"], 5000)
+W = 0.96888, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>les deux tests rejettent <span class="math inline">\(\mathcal{H}_0\)</span> à un seuil bien plus bas que 1%, on peut sans trop de risque affirmer que nos deux groupes suivent une loi normale et donc procéder à un test de student.</p>
+<p>Hypothèse:<br>
+<span class="math inline">\(\mathcal{H}_0\)</span>: <span class="math inline">\(\mu_1=\mu2 \Leftrightarrow\)</span> “La moyenne d’age des individus est le même qu’il réussisse ou non l’expédition.<br>
+vs<br>
+<span class="math inline">\(\mathcal{H}_1\)</span>: <span class="math inline">\(\mu_1&gt;\mu2 \Leftrightarrow\)</span>”La moyenne d’age des individus est différente selon qu’il réussisse ou non l’expédition.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Two Sample t-test
+
+data:  data$age by data$success
+t = 25.969, df = 72998, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group false and group true is greater than 0
+95 percent confidence interval:
+ 1.914861      Inf
+sample estimates:
+mean in group false  mean in group true 
+           38.12058            36.07623 </code></pre>
+</div>
+</div>
+<p>On rejette <span class="math inline">\(\mathcal{H}_0\)</span> à un seuil bien en dessous de 1%, on peut donc affirmer qu’en moyenne, les individus qui réussissent leur expéditions sont moins agés que ceux qui ne réussisse pas.</p>
+</section>
+</section>
+</section>
+<section id="apprentissage-automatique" class="level1">
+<h1>Apprentissage automatique</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Dans ce projet, nous avons choisi de comparer la mise en place de méthodes d’apprentissage supervisé en les implémentant en Julia et Python pour les évaluer. Les deux méthodes que nous avons choisies sont RandomForest (RF) et K-Nearest Neighbour (KNN). Notre choix s’est porté sur ces deux dernières car nous les avons étudiées l’année passée dans un cours d’introduction au machine learning. Un autre facteur qui nous a poussés à choisir ces deux algorithmes est qu’ils utilisent le même prétraitement pour les données à l’entrée de l’algorithme.</p>
+</section>
+<section id="présentation-des-modèles" class="level2">
+<h2 class="anchored" data-anchor-id="présentation-des-modèles">Présentation des modèles</h2>
+<section id="onehotencode" class="level3">
+<h3 class="anchored" data-anchor-id="onehotencode">OneHotEncode</h3>
+<p>Le OneHotEncode (OHE) a pour objectif d’encoder les variables catégorielles en une matrice unitaire.</p>
+<section id="exemple" class="level4">
+<h4 class="anchored" data-anchor-id="exemple">Exemple</h4>
+<p>On observe 4 individus en notant leur sexe et la nature de leur contrat de travail:</p>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
+
+<table class="tg">
+<thead>
+<tr>
+<th class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">sex</span>
+</th>
+<th class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">Type de contrat de travail</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">F</span>
+</td>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">CDI</span>
+</td>
+</tr>
+<tr>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">M</span>
+</td>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">CDD</span>
+</td>
+</tr>
+<tr>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">M</span>
+</td>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">Intérimaire</span>
+</td>
+</tr>
+<tr>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">F</span>
+</td>
+<td class="tg-0pky">
+<span style="font-weight:normal;font-style:normal;color:#000">CDI</span>
+</td>
+</tr>
+</tbody>
+
+</table>
+<p>Après passage dans le OneHotEncoder, on obtient la matrice suivante:</p>
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+
+<table class="tg">
+<thead>
+<tr>
+<th class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">sex_F</span>
+</th>
+<th class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">sex_M</span>
+</th>
+<th class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">TDCT_CDI</span>
+</th>
+<th class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">TDCT_CDD</span>
+</th>
+<th class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">TDCT_Intérimaire</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+</tr>
+<tr>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+</tr>
+<tr>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+</tr>
+<tr>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">1</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+<td class="tg-0lax">
+<span style="font-weight:normal;font-style:normal;color:#000">0</span>
+</td>
+</tr>
+</tbody>
+
+</table>
+<p>Maintenant, nous pouvons appliquer des opérations mathématiques sur la matrice obtenue, comme calculer des effectifs de façon simple ou des distances entre les individus. Cependant, le OneHotEncoder présente un inconvénient majeur, car il augmente énormément le nombre de colonnes de la matrice de base si les variables contiennent beaucoup de catégories.</p>
+</section>
+</section>
+<section id="k-nearest-neighbour" class="level3">
+<h3 class="anchored" data-anchor-id="k-nearest-neighbour">K-Nearest Neighbour</h3>
+<p>Soit (k + 1). Une fois notre matrice de données et l’individu passé dans le OHE, on calcule la distance de notre individu par rapport à chaque ligne de la matrice de données, et on obtient une nouvelle matrice appelée matrice de distance. On regarde les (k) distances les plus faibles pour identifier les (k) individus qui ressemblent le plus. On observe les (k) valeurs des données à prédire et on attribue par la suite à notre individu à prédire la classe qui le représente.</p>
+</section>
+<section id="randomforest" class="level3">
+<h3 class="anchored" data-anchor-id="randomforest">RandomForest</h3>
+<p>Les forêts aléatoires reposent sur la construction d’arbres de décision de manière itérative. Elles se décomposent en plusieurs étapes: 1. Création des arbres : La Random Forest commence par créer un ensemble d’arbres de décision. Chaque arbre est formé sur un sous-ensemble aléatoire des données d’entraînement.</p>
+<ol start="2" type="1">
+<li><p>Prédiction des arbres : Une fois les arbres entraînés, une prédiction est obtenue en faisant voter tous les arbres. Pour une classification, chaque arbre “vote” pour une classe, et la classe qui obtient le plus de votes est choisie comme prédiction finale.</p></li>
+<li><p>Réduction de la corrélation : L’une des forces de la forêt aléatoire est de grandement limiter la corrélation, car chaque arbre est entraîné sur une petite partie du jeu de données.</p></li>
+</ol>
+</section>
+</section>
+<section id="mise-en-place-des-méthodes" class="level2">
+<h2 class="anchored" data-anchor-id="mise-en-place-des-méthodes">Mise en place des méthodes</h2>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<p>Python étant actuellement un langage de référence dans le monde du machine learning, il existe un package bien pratique contenant tous les outils nécessaires à l’apprentissage supervisé. Ce package est Scikit-learn. Pour bien fonctionner, il s’appuie sur le package NumPy qui permet de manipuler les objets mathématiques de base.</p>
+</section>
+<section id="difficultés" class="level3">
+<h3 class="anchored" data-anchor-id="difficultés">Difficultés</h3>
+<p>Nous n’avons pas rencontré de difficultés particulières avec l’utilisation de ces packages en raison de notre familiarité avec ces manipulations. Le gros avantage de Python par rapport à Julia est que le langage est assez permissif en ce qui concerne la structure des données au niveau du prétraitement et que toutes les fonctionnalités sont incorporées dans un seul package, contrairement à Julia, comme nous le détaillerons par la suite.</p>
+</section>
+</section>
+<section id="julia-1" class="level2">
+<h2 class="anchored" data-anchor-id="julia-1">Julia</h2>
+<p>Julia étant un langage de programmation plus jeune que Python, la partie machine learning n’est pas simple à prendre en main en tant qu’utilisateur. Nous détaillerons par la suite les difficultés rencontrées. Cependant, le package MLJ.jl me paraît très prometteur car il essaye de réunir toutes les fonctionnalités de machine learning, tout comme le fait Scikit-learn (qui possède une version Julia qui n’est pas encore à la hauteur selon moi).</p>
+<section id="difficultés-1" class="level3">
+<h3 class="anchored" data-anchor-id="difficultés-1">Difficultés</h3>
+<section id="onehotencoder" class="level4">
+<h4 class="anchored" data-anchor-id="onehotencoder">OneHotEncoder</h4>
+<p>Dans un premier temps, contrairement à Python, le OHE de MLJ.jl ne nous a pas permis de transformer un vecteur (individu à prédire) en utilisant la fonction transform, qui devrait normalement fonctionner après avoir adapté notre modèle aux données. Pour remédier à ce problème, nous avons choisi d’ajouter l’individu à prédire en dernière place des données à transformer via le OHE, en utilisant la fonction fit!. Une autre difficulté a été de mettre les dataframes au bon format pour pouvoir utiliser le OHE. Pour cela, nous avons utilisé la fonction coerce, qui permet de transformer les colonnes de type String64 en Multiclass, ce type étant pris en charge par notre OHE.</p>
+</section>
+<section id="k-nearest-neighbour-1" class="level4">
+<h4 class="anchored" data-anchor-id="k-nearest-neighbour-1">K-Nearest Neighbour</h4>
+<p>Pour utiliser la prédiction via un KNN en plus du package MLJ.jl, nous avons aussi utilisé NearestNeighbors. Pas de difficulté particulière, sauf un petit problème sur une transposition de matrice qui augmentait grandement le temps de calcul. On passait du calcul de normes dans (^{60}) à une norme dans (^{7300}), ce qui explique pourquoi la matrice de distance prenait presque 1h à être calculée.</p>
+</section>
+<section id="randomforest-1" class="level4">
+<h4 class="anchored" data-anchor-id="randomforest-1">RandomForest</h4>
+<p>La méthode qui nous aura pris le plus de temps à mettre en œuvre est le RandomForest, car le package MLJ propose plusieurs implantations de RandomForest provenant de packages variés. Dans un premier temps, nous avons testé avec l’interface de Scikit-learn, mais elle appelait Python en interne, ce qui perd de l’intérêt pour notre comparaison. Nous avons donc opté pour la librairie DecisionTree, qui était disponible dans les modèles. Cependant, nous avons rencontré quelques petites difficultés comme .fit et .predict qui sont définis dans les deux packages, ce qui produisait l’erreur “MethodError: no method matching” alors que l’on utilisait les mêmes types que ceux spécifiés dans la documentation. Pour remédier à ce problème, nous avons simplement remplacé .fit et .predict par DecisionTree.fit et DecisionTree.predict quand cela était nécessaire.</p>
+</section>
+</section>
+</section>
+</section>
+<section id="interface-shiny" class="level1">
+<h1>Interface Shiny</h1>
+<section id="objectif-de-linterface" class="level2">
+<h2 class="anchored" data-anchor-id="objectif-de-linterface">Objectif de l’interface</h2>
+<p>La création de l’interface avait pour première mission d’implémenter l’apprentissage automatique réalisé sur notre jeu de données. Ceci pour permettre à un utilisateur lambda de pouvoir jouer en prédisant le succès ou non de sa potentielle expédition Himalayenne suivant moultes conditions.<br>
+L’idée principale était donc de pouvoir proposer à un non initié du Machine Learning une approche ludique de cette discipline en donnant une approximation somme toute relative de ses chances de réussite s’il venait à se lancer dans une expédition.<br>
+Notre jeu de données n’étant pas réellement pertinent pour permettre une prédiction digne de ce nom, cela nous paraissait tout de même intéressant de mettre en place cette idée.<br>
+Afin d’aller plus loin et de proposer également une expérience plus statistique, j’ai eu l’idée de dédié tout une partie de l’interface à l’analyse statistique et à la comparaison de graphiques.<br>
+Les graphiques sont des outils formidables permettant de visualiser les données et les “faire parler”.Avec le temps et les différentes versions de R, de nombreux packages permettant la visualisation ont fait leurs apparitions, avec des graphiques plus jolis (bien que subjectif), plus lisibles, avec plus de fonctionnalités et toujours plus d’options. Cependant, tout ces nouveaux packages ont leurs grammaires bien à eux et il demande d’y consacrer un minimum de temps. Il est également pas toujours chose aisé de choisir le graphique qui nous convienne le mieux suivant ce que l’on recherche: d’un graphique efficace qui va à l’essentielle à un graphique bourré d’options jusqu’à en perdre la vue.<br>
+Mon idée est donc la suivante: et si, par le biais d’une interface, nous pourrions comparer plusieurs graphiques de différents packages avec seulement quelques cliques? C’est donc ce que je me suis efforcer d’essayer de faire.<br>
+Lorsque je parle des graphiques dans de nombreux packages, en plus de ceux implantés sur le package <code>base</code> sur R, on retrouve sur R surtout deux principaux packages (avec de nombreux packages subsidiaires et parfois complémentaires):</p>
+<ul>
+<li><code>ggplot2</code></li>
+<li><code>ploly</code></li>
+</ul>
+<p>Bien que <code>plotly</code> est implanté à partir de <code>ggplot2</code>, je les distinguerais tout le long de ce projet, étant donné que de nombreuses options sont possibles sur <code>ggplot2</code> et pas sur <code>plotly</code> et vice-versa. Bien que <code>plotly</code>intègre une fonction permettant d’envelopper un graphique <code>ggplot</code> et de le transformer en graphique interactif, cette fonction ne fonctionne que pour une partie des graphiques. L’implentation de <code>ggplotly</code> dans mon interface permettra à l’utilisateur de se rendre compte des avantages et des limites de cette fonction.</p>
+</section>
+<section id="choix-des-graphiques" class="level2">
+<h2 class="anchored" data-anchor-id="choix-des-graphiques">Choix des graphiques</h2>
+<p>Pour tenter de comparer ces 3 packages (<code>base</code>,<code>ggplot2</code>,<code>plotly</code>), j’ai d’abord décidé de faire une liste de graphiques types qui me semble particulièrement utile et “indispensable” pour une bonne analyse. Cette liste, bien entendu non exhaustive a été confectionné selon trois catégories:</p>
+<ul>
+<li><strong>Graphiques quantitatifs</strong>: permettre de visualiser des données selon des variables quantitatives.</li>
+<li><strong>Graphiques qualitifs</strong>: permettre de visualiser des données selon des variables qualitatives.</li>
+<li><strong>Graphique quantitatif/qualitatifs</strong>: permettre de visualiser des données quantitatives/qualitatives, en fonction de données qualitatives.</li>
+</ul>
+<p>J’ai ensuite crée un fichier <code>comparaison_graphiques.r</code> dans lequel je choisis plusieurs graphiques par catégories qui me semblent les plus pertinents pour une analyse de donnée standart. Dans ce fichier je regroupe par graphique les possibilités de chaque package.<br>
+Voici la liste des graphiques retenus:</p>
+<section id="graphique-quantitatif" class="level3">
+<h3 class="anchored" data-anchor-id="graphique-quantitatif">Graphique quantitatif</h3>
+<section id="histogramme" class="level4">
+<h4 class="anchored" data-anchor-id="histogramme">Histogramme</h4>
+<p><strong>Objectif</strong>: Visualiser la distribution des valeurs d’une variable quantitative en regroupant les données en intervalles (bins).<br>
+<strong>Avantages</strong> : Donne une idée de la forme de la distribution, des tendances centrales et de la dispersion.<br>
+Permet également à l’utilisateur de pouvoir choisir le nombre de bins.<br>
+<strong>Inconvénients</strong> : Sensible au choix des bins, peut être difficile à interpréter si le nombre de bins est mal choisi.</p>
+<p>L’intérêt de l’histogramme sera donc de pouvoir explorer la forme globale de la distribution.</p>
+</section>
+<section id="courbe-de-densité" class="level4">
+<h4 class="anchored" data-anchor-id="courbe-de-densité">Courbe de densité</h4>
+<p><strong>Objectif</strong> : Estimer la densité de probabilité de la distribution des données continues.<br>
+<strong>Avantages</strong> : Lisse la distribution, facilite la visualisation des modes et des tendances.<br>
+<strong>Inconvénients</strong> : Dépend du choix de la méthode d’estimation de la densité (il me semble que d’un package à l’autre il s’agit des mêmes estimations donc pas de réel différence entre eux sur ce point).<br>
+L’intérêt de la courbe de densité sera donc d’obtenir une représentation plus lisse de la distribution que celle de l’histogramme.</p>
+</section>
+<section id="scatterplot" class="level4">
+<h4 class="anchored" data-anchor-id="scatterplot">Scatterplot</h4>
+<p><strong>Objectif</strong> : Examiner la relation entre deux variables quantitatives.<br>
+<strong>Avantages</strong> : Permet de visualiser la dispersion des points et les relations entre les variables.<br>
+<strong>Inconvénients</strong> : Peut être difficile à interpréter avec un grand nombre de points, ne montre pas toujours la densité des points (d’où l’intérêt de méthodes un peu différentes et plus pertinentes utilisés pour <code>ggplot2</code>et <code>plotly</code>. L’intérêt du scatterplot sera donc surtout de pouvoir explorer la relation entre deux variables quantitatives.<br>
+La possibilité de visualiser ces données en les discriminant par rapport à une variable indicatrice est également prise en compte car très utile dans l’analyse de données.</p>
+</section>
+<section id="boxplot" class="level4">
+<h4 class="anchored" data-anchor-id="boxplot">boxplot</h4>
+<p><strong>Objectif</strong> : Résumer la distribution des valeurs en mettant en évidence les mesures de position (médiane, quartiles) et les valeurs aberrantes.<br>
+<strong>Avantages</strong> : Donne une vue rapide des mesures de dispersion, identifie les valeurs aberrantes.<br>
+<strong>Inconvénients</strong> : Ne montre pas la forme détaillée de la distribution, peut ne pas être aussi informatif avec des distributions asymétriques .<br>
+L’intérêt du boxplot sera donc de résumer la distribution et identifier les valeurs aberrantes. Dans le cas d’une distribution asymétrique, nous pouvons tout à fait procéder à un regroupement des données par intervalles (et donc avoir un résumé de la distribution et des valeurs aberrantes par intervalles).</p>
+</section>
+</section>
+<section id="graphiques-qualitatifs" class="level3">
+<h3 class="anchored" data-anchor-id="graphiques-qualitatifs">Graphiques qualitatifs</h3>
+<section id="barplot" class="level4">
+<h4 class="anchored" data-anchor-id="barplot">barplot</h4>
+<p><strong>Objectif</strong> : Visualiser la distribution des catégories d’une variable qualitative en utilisant des barres.<br>
+<strong>Avantages</strong> : Facile à interpréter, montre la fréquence ou la proportion de chaque catégorie.<br>
+<strong>Inconvénients</strong> : Peut être moins informatif pour de nombreuses catégories.C’est là que la selection de modalités entre en jeu: une séléction des modalités directement intégré dans le graphique comme c’est le cas pour <code>plotly</code> est un vrai plus dans ce cas. Un tri (croissant ou décroissant) des barres peut également permettre une meilleure visibilité du graphique.<br>
+L’intérêt du barplot sera donc de montrer la fréquence ou la proportion de chaque catégorie d’une variable catégorielle.</p>
+</section>
+<section id="mosaicplot" class="level4">
+<h4 class="anchored" data-anchor-id="mosaicplot">mosaicplot</h4>
+<p><strong>Objectif</strong> : Représenter graphiquement les relations entre deux variables catégorielles en utilisant des zones rectangulaires proportionnelles aux fréquences.<br>
+<strong>Avantages</strong> : Montre les relations jointes entre deux variables catégorielles.<br>
+<strong>Inconvénients</strong> : Peut être complexe avec de nombreuses catégories et parfois illisible.</p>
+</section>
+</section>
+<section id="graphiques-quantitatifsqualitatifs" class="level3">
+<h3 class="anchored" data-anchor-id="graphiques-quantitatifsqualitatifs">Graphiques quantitatifs/qualitatifs</h3>
+<section id="courbe-de-densité-1" class="level4">
+<h4 class="anchored" data-anchor-id="courbe-de-densité-1">Courbe de densité</h4>
+<p><strong>Objectif</strong>: regarder ici la densité d’une partie de notre jeu de données.<br>
+<strong>Exemple</strong>: Nous souhaitons voir si la densité de l’âge d’une personne en fonction du sexe suit une loi normale, nous allons donc représenter deux densités de la variable <code>age</code>: une pour les hommes et une pour les femmes.</p>
+</section>
+<section id="barplot-1" class="level4">
+<h4 class="anchored" data-anchor-id="barplot-1">barplot</h4>
+<p><strong>Objectif</strong>: analyser une variable qualitative ou quantitative, en fonction d’une autre variable qualitative.<br>
+L’intérêt sera donc de pouvoir visualiser sur une valeur précise de la première variable, quels sont les modalités les plus présentes de la deuxième variable.<br>
+<strong>Exemple</strong>: je regarde la catégorie professionnelle d’une personne. Je voudrais savoir quelle est la proportion d’hommes et de femmes pour chaque catégories.</p>
+</section>
+<section id="boxplot-1" class="level4">
+<h4 class="anchored" data-anchor-id="boxplot-1">boxplot</h4>
+<p><strong>Objectif</strong>: représenter un résumé de la distribution et des valeurs aberrantes en fonction des modalités d’une variable catégorielle.<br>
+<strong>Exemple</strong>: Je souhaite savoir si la distribution de la taille d’une personne est semblable entre un homme et une femme.</p>
+</section>
+<section id="scatterplot-1" class="level4">
+<h4 class="anchored" data-anchor-id="scatterplot-1">Scatterplot</h4>
+<p><strong>Objectif</strong>: visualiser une relation entre deux variables quantitatives sur une partie de la population.<br>
+<strong>Exemple</strong>: Je souhaite regarder la relation entre la taille et le poids chez les Americains et comparer cette relation taille/poids avec celle chez les Français.</p>
+</section>
+</section>
+</section>
+<section id="résumés-statistiques" class="level2">
+<h2 class="anchored" data-anchor-id="résumés-statistiques">Résumés statistiques</h2>
+<p>En plus de cette comparaison des graphique, j’ai souhaité ajouter une simple visualisation des résumés statistiques pour permettre à l’utilisateur moyen d’avoir un premier aperçu de ses données.</p>
+<section id="variable-quantitative" class="level3">
+<h3 class="anchored" data-anchor-id="variable-quantitative">Variable quantitative</h3>
+<p>En plus d’un simple résumé statistique de la variable, je propose à l’utilisateur de pouvoir discriminer cette dernière en fonction des modalités d’une variable catégorielle.<br>
+<strong>Exemple</strong>: Je souhaite voir les différents estimateurs statistiques (moyennes, médianes,…) de l’âge des personnes travaillant dans le domaine de la santé.</p>
+</section>
+<section id="variable-qualitative" class="level3">
+<h3 class="anchored" data-anchor-id="variable-qualitative">Variable qualitative</h3>
+<p>En plus des effectifs et de la fréquence de chaque modalité de la variable,j’ajoute les frequences cumulées (utile surtout pour les variables catégorielles ordinales).</p>
+</section>
+</section>
+<section id="workflow-de-linterface" class="level2">
+<h2 class="anchored" data-anchor-id="workflow-de-linterface">Workflow de l’interface</h2>
+<p>La disposition des éléments, les différentes fonctionnalités,etc… Comme toute personne qui apprend une nouvelle notion informatique (ici la réalisation d’une interface shiny), j’ai procédé par essai-erreur. L’avantage de ce procédé est qu’il m’a permis d’en apprendre énormément sur la réalisation d’une interface shiny. Cela m’a permis de découvrir pleins de packages utiles, que ce soit des packages inhérent à la modélisation de l’interface, à son design et bien entendu à l’analyse de données.<br>
+En revanche, ce procédé fait qu’aujourd’hui mon interface est largement perfectible, surtout en ce qui concerne le placement des objets shiny et les possibles interactions entre eux. Pour permettre une meilleure modélisation de mes interfaces dans le futur, je procèderais en amont à un worflow de mon interface (ce que je fais déja avec un autre projet).</p>
+<section id="structure-de-linterface-shiny" class="level3">
+<h3 class="anchored" data-anchor-id="structure-de-linterface-shiny">Structure de l’interface shiny</h3>
+<p>L’interface se décompose en 3 principales parties:</p>
+<ul>
+<li>DATA</li>
+<li>Analyse</li>
+<li>Prédictions</li>
+</ul>
+<section id="data" class="level4">
+<h4 class="anchored" data-anchor-id="data">DATA</h4>
+<p>Dans cette partie, nous y retrouvons deux onglets, l’onglet permettant de visualiser le jeu de donnés en format assez classique, et un autre onglet inhérent aux résumés statistiques. Pour ce dernier onglet, il reste pour le moment très minimaliste et fera l’objet d’améliorations (voir les axes d’améliorations en dernière partie).<br>
+Pour ce qui est du jeu de données, j’ai fait le choix d’utiliser le package <code>reactable</code> pour permettre de nombreuses personnalisations sur ce dernier.<br>
+<code>reactable</code> est un package permettant la création de tableaux interactifs. Les options qui ont étés retenus sont les suivantes:</p>
+<ul>
+<li>la recherche d’informations par variables: <code>searchable=TRUE</code>.<br>
+Pour chaque colonne dont l’option est activé, une case de recherche est mise à disposition.<br>
+<strong>Exemple</strong>: Je souhaite seulement regarder les expeditions himalayennes faites par les français, je cherche <code>france</code>dans la colonne <code>citizenship</code>.<br>
+</li>
+<li>le tri du jeu de données: <code>filterable=TRUE</code>.<br>
+Permet de trier par ordre croissant ou décroissant le jeu de donnnée par rapport à la colonne spécifiée.<br>
+<strong>Exemple</strong>: je cherche à trié les expéditions himalayennes par âges croissant des grimpeurs pour regarder les expeditions des plus jeunes.</li>
+<li>le design des cases: changer la couleur, la forme, le style d’une colonne en fonction de ses modalités.<br>
+<strong>Exemple</strong>: Pour permettre une meilleure visualisation de notre variable cible <code>success</code>, changer la couleur en fonction de la réussite ou non (<span style="color:green;">vert</span> pour TRUE, <span style="color:red;"><strong>rouge</strong></span> pour FALSE).<br>
+D’autres options ont étés utilisés surtout dans un objectif d’esthétique mais cela ralentissait grandement le chargement du jeu de données lors du lancement de l’interface ce qui n’est pas très agréable. Pour contrer ça il faudrait faire cette mise en forme seulement pour les données affichées et non pour le dataset entier.</li>
+</ul>
+</section>
+<section id="analyse" class="level4">
+<h4 class="anchored" data-anchor-id="analyse">Analyse</h4>
+<p>Trois onglets sont disponible à l’intérieur de celui-ci.<br>
+Ces trois onglets corresponds à la distinction des graphiques en trois catégories faites auparavant: graphiques quantitatives, graphiques qualitatifs et graphiques quantiatifs/qualitatifs.<br>
+Dans le menu de l’onglet <code>Analyse</code> se trouve des boutons radios <code>prettyRadioButtons</code> permettant de choisir le package utilisé pour faire le graphique: classique (pour <code>base</code>), ggplot et plotly.<br>
+Chaque onglet est disposé de la même manière: une partie <code>sidebarpanel</code>dans lequel l’utilisateur choisis le graphique qu’il souhaite tracer, les variables qu’il souhaite visualiser et quelques options supplémentaires (des <code>slider</code> pour changer les intervalles de certains graphiques,des variables à discriminer, etc.). Afin d’éviter un rafraichissement du graphique à chaque modification, et pour permettre à l’utilisateur de prendre son temps pour choisir toute ses options de graphiques, un boutton d’execution est mis à disposition. Pour tracer le graphique, il suffit d’appuyer sur ce boutton. Il suffit de switch entre les différents packages de graphique pour pouvoir les comparer. L’autre partie de l’onglet <code>mainpanel</code>étant dédié à l’affichage du graphique.</p>
+</section>
+<section id="prédictions" class="level4">
+<h4 class="anchored" data-anchor-id="prédictions">Prédictions</h4>
+<p>Cet unique onglet contient le travail d’apprentissage supervisé réalisé sur notre jeu de données. Comme indiqué ci-dessus,notre objectif était de permettre à un utilisateur lambda de pouvoir prédire le succès de sa potentielle expédition himalayenne.<br>
+Pour cela,l’onglet est constitué d’un <code>sidebarpanel</code> dans lequel est posé plusieurs questions à l’utilisateur: son âge,sa nationalité, s’il souhaite grimper tout seul ou accompagné,ect.<br>
+Ces questions sont en fait relatifs aux différentes variables qui nous ont permis de procéder à l’apprentissage de notre jeu de données, afin de prédire le taux de succès d’une expédition en particulière.<br>
+Dans le <code>mainpanel</code> se constitue deux parties, une donnant les résultats provenant de l’apprentissage réalisé sur python et une autre sur Julia. Cela pour permettre de comparer l’apprentissage des modèles choisis sur les deux langages.<br>
+Enfin, il est également possible dans le menu de changer de modèle d’apprentissage en passant du modèle KNN à celui de randomforest.</p>
+</section>
+<section id="guide" class="level4">
+<h4 class="anchored" data-anchor-id="guide">Guide</h4>
+<p>Afin de permettre à un n’importe qui de comprendre le fonctionnement de chaque onglet, un guide interactif a été ajouté à l’aide du package <code>cicerone</code>.<br>
+Ce package permet à l’aide d’un script r de préciser les emplacements de chaque input de l’interface, afin de guider au mieux l’utilisateur.<br>
+<strong>Exemple</strong>:<br>
+<img src="Rapport_projet_files/guide.png" class="img-fluid" alt="Guide"></p>
+</section>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
