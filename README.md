@@ -23,7 +23,7 @@ Pour lancer l'application, il vous faudra vous placer dans la page principale du
 if(!require(shiny))
   install.packages("shiny")
 require(shiny)
-runApp("R/AnalyseR.R)
+runApp("R/app.R)
 ```
 Il se peut que les différents packages crées par nos soins ne s'installe pas correctement, si tel est le cas, ils sont disponible en format tar.gz dans le dossier **R/packagesR**.
 
