@@ -31,11 +31,11 @@ Il se peut que les différents packages crées par nos soins ne s'installe pas c
 Pour la partie de Machine Learning, elle fonctionne très bien de manière autonome mais n'est pas encore opérationnelle au sein de l'interface.
 Pour vous permettre d' utiliser la partie python, il vous faut réaliser quelques opérations au sein du projet.
 
-## création d'un environnement virtuel
+## Création d'un environnement virtuel
 ```{source, engine='bash'}
 brew install python@3.11 # uniquement sous linux et mac
-python3 -m venv /Python/venv
+python3 -m venv Python/venv
 source Python/venv/bin/activate
-pip install -r /Python/requirements.txt
+pip install -r Python/requirements.txt
 ```
 
