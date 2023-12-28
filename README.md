@@ -39,3 +39,6 @@ source Python/venv/bin/activate
 pip install -r Python/requirements.txt
 ```
 
+## Installation du package Julia
+
+]add https://github.com/RobinChaussemy/JuliaPredict.jl.git
