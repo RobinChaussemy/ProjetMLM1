@@ -37,8 +37,11 @@ brew install python@3.11 # uniquement sous linux et mac
 python3 -m venv Python/venv
 source Python/venv/bin/activate
 pip install -r Python/requirements.txt
+deactivate
 ```
 
 ## Installation du package Julia
-
-]add https://github.com/RobinChaussemy/JuliaPredict.jl.git
+```{source, engine='bash'}
+]
+add https://github.com/RobinChaussemy/JuliaPredict.jl.git
+```

@@ -1,6 +1,11 @@
+require(shiny)
 if(!require(here)){
   install.packages("here")
 }
+if(!require(devtools)){
+  install.packages("devtools")
+}
+require("here")
 if(!require(JuliaCall)){
   install.packages("JuliaCall")
 }
@@ -278,14 +283,18 @@ ui <- dashboardPage(
     h1("Prédictions Python:"),
     verbatimTextOutput("predknnP"),
     textOutput("textPython"),
-    progressBar(id = "pb1", value = 0, total = 100, status = "info", display_pct = TRUE, striped = FALSE, title = "Pourcentage de succès:")
+    progressBar(id = "pb1", value = 0, total = 100, status = "info", display_pct = TRUE, striped = FALSE, title = "Pourcentage de succès:"),
+    numericInput("num_voisin", label = h3("  Nombre de voisin"), value = 1000),
+    numericInput("norme", label = h3(" Choix de la norme"), value = 2),
   ),
   column(width = 6,
     h1("Prédictions Julia:"),
     verbatimTextOutput("predknnJ"),
     textOutput("textJulia"),
-    progressBar(id = "pb2", value = 0, total = 100, status = "info", display_pct = TRUE, striped = FALSE, title = "Pourcentage de succès:")
+    progressBar(id = "pb2", value = 0, total = 100, status = "info", display_pct = TRUE, striped = FALSE, title = "Pourcentage de succès:"),
+    numericInput("num_arbres", label = h3("  Nombre d'arbres "), value = 100)
 
+             
   )
 )
       )
@@ -585,14 +594,14 @@ guide5$init()
  predict_knnP <- eventReactive(input$run5,{
    if (input$type_pred == "knn"){
      ind <- c(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen,0,0)
-     predict <- KNN_Python(ind)
+     predict <- KNN_Python(ind,input$num_voisin,input$norme)
      output$textPython <- renderText({
        paste("Vous avez ",round(predict$proba_s*100,0),"% de chances de réussir",".","La prediction à mis : ",round(predict$temps,3),"s")
      })
      updateProgressBar(session = session, id = "pb1", value = round(predict$proba_s*100,0),total=100)
    }else{
      ind <- list(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen,0,0)
-     Forest = RandomForest_Python(ind,5)
+     Forest = RandomForest_Python(ind,input$num_arbres)
      output$textPython <- renderText({
        paste("Vous avez ",round(Forest$proba_s*100,0),"% de chances de réussir",".","La prediction à mis : ",round(Forest$temps,3),"s")
      })
@@ -603,14 +612,13 @@ guide5$init()
 
  predict_knnJ <- eventReactive(input$run5,{
    if (input$type_pred == "knn"){
-     #print(c(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen))
-     KNN_J <- KNN_Julia(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen,0,0,5)
+     KNN_J <- KNN_Julia(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen,0,0,input$num_voisin,input$norme)
      output$textJulia <- renderText({
        paste("Vous avez ",round(KNN_J$prediction*100,0),"% de chances de réussir",".","La prediction à mis : ",round(KNN_J$temps,4),"s")
      })
      updateProgressBar(session = session, id = "pb2", value = round(KNN_J$prediction*100,0),total=100)
    }else{
-     Tree <- PredictionJulia::RandomForest_Julia(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen,0,0,5)
+     Tree <- PredictionJulia::RandomForest_Julia(input$peak,input$season,input$citizenship,input$role,input$year,input$sex,input$age,input$hired,input$solo,input$oxygen,0,0,input$num_arbres)
      output$textJulia <- renderText({
        paste("Vous avez ",round(Tree$proba_s*100,0),"% de chances de réussir",".","La prediction à mis : ",round(Tree$temps,3),"s")
      })
