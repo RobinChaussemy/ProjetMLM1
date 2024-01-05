@@ -53,17 +53,17 @@ def EncodeData(data,indiv):
     return [X_encoded,Y_encoded]
 
 def PredictKNN(indiv,dataencode,y,p = 3,n = 11):
-    X_train, X_test, y_train, y_test = train_test_split(dataencode, y, test_size=0.3, random_state=0)
+    #X_train, X_test, y_train, y_test = train_test_split(dataencode, y, test_size=0.3, random_state=0)
     KNN = KNeighborsClassifier(n_neighbors = n, p = p)
-    KNN.fit(X_train,y_train)
+    KNN.fit(dataencode,y)
     res_predi = KNN.predict(indiv)
     prob_predi = KNN.predict_proba(indiv)
     return [res_predi[0],prob_predi[0][0],prob_predi[0][1]]
   
-def PredictForest(data,X,indiv,n = 2):
-    random_forest = RandomForestClassifier(criterion = "gini",n_estimators = n)
+def PredictForest(data,X,indiv,n_arbre = 100):
+    random_forest = RandomForestClassifier(criterion = "gini",n_estimators = n_arbre)
     target = data.success
-    X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(X, target, test_size=0.7)
     random_forest.fit(X_train,y_train)
     res_predi = random_forest.predict(indiv)
     prob_predi = random_forest.predict_proba(indiv)
