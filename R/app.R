@@ -5,10 +5,16 @@ if(!require(here)){
 if(!require(devtools)){
   install.packages("devtools")
 }
-require("here")
-if(!require(JuliaCall)){
-  install.packages("JuliaCall")
+if(!require(ggridges)){
+  install.packages("ggridges")
 }
+if(!require(forcats)){
+  install.packages("forcats")
+}
+require("here")
+#if(!require(JuliaCall)){
+#  install.packages("JuliaCall")
+#}
 path = paste0(here(),"/R/")
 if(!require(shiny)){
   install.packages("shiny")
@@ -22,6 +28,9 @@ if(!require(shinythemes)){
 }
 if(!require(RColorBrewer)){
   install.packages("RColorBrewer")
+}
+if(!require(cicerone)){
+  install.packages("cicerone")
 }
 if(!require(reactable)){
   install.packages("reactable")
@@ -39,10 +48,10 @@ if(!require(patchwork)){
   install.packages("patchwork")
 }
 if(!require(scindeR)){
-  install.packages(paste0(path,"packagesR/scindeR_0.0.0.9000.tar.gz"), repos = NULL, type = "source")
+  install.packages("R/packagesR/scindeR_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 }
 if(!require(compar)){
-  install.packages(paste0(path,"packagesR/compar_0.0.0.9000.tar.gz"), repos = NULL, type = "source")
+  install.packages("R/packagesR/compar_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 }
 if(!require(PredictionPython)){
   devtools::install_github("https://github.com/RobinChaussemy/PredictionPython.git")
@@ -57,6 +66,7 @@ if(!require(shinyWidgets)){
   install.packages("shinyWidgets")
 }
 
+require(cicerone)
 require(shinyWidgets)
 require(shinydashboard)
 require(shinythemes)
