@@ -1,7 +1,9 @@
 require(shiny)
-if(!require(here)){
-  install.packages("here")
+if(!require(devtools)){
+  install.packages("devtools")
 }
+require(devtools)
+
 if(!require(devtools)){
   install.packages("devtools")
 }
@@ -11,11 +13,7 @@ if(!require(ggridges)){
 if(!require(forcats)){
   install.packages("forcats")
 }
-require("here")
-#if(!require(JuliaCall)){
-#  install.packages("JuliaCall")
-#}
-path = paste0(here(),"/R/")
+
 if(!require(shiny)){
   install.packages("shiny")
 }
@@ -48,10 +46,10 @@ if(!require(patchwork)){
   install.packages("patchwork")
 }
 if(!require(scindeR)){
-  install.packages("R/packagesR/scindeR_0.0.0.9000.tar.gz", repos = NULL, type = "source")
+  install.packages(paste0(getwd(),"/packagesR/scindeR_0.0.0.9000.tar.gz"), repos = NULL, type = "source")
 }
 if(!require(compar)){
-  install.packages("R/packagesR/compar_0.0.0.9000.tar.gz", repos = NULL, type = "source")
+  install.packages(paste0(getwd(),"/packagesR/compar_0.0.0.9000.tar.gz"), repos = NULL, type = "source")
 }
 if(!require(PredictionPython)){
   devtools::install_github("https://github.com/RobinChaussemy/PredictionPython.git")

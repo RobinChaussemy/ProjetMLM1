@@ -226,6 +226,7 @@ On rejette $\mathcal{H}_0$ à un seuil bien en dessous de 1%, on peut donc affir
 
 
 # Apprentissage automatique
+
 ## Introduction
 
 Dans ce projet, nous avons choisi de comparer la mise en place de méthodes d'apprentissage supervisé en les implémentant en Julia et Python pour les évaluer. Les deux méthodes que nous avons choisies sont RandomForest (RF) et K-Nearest Neighbour (KNN). Notre choix s'est porté sur ces deux dernières car nous les avons étudiées l'année passée dans un cours d'introduction au machine learning. Un autre facteur qui nous a poussés à choisir ces deux algorithmes est qu'ils utilisent le même prétraitement pour les données à l'entrée de l'algorithme.
@@ -236,7 +237,7 @@ Dans ce projet, nous avons choisi de comparer la mise en place de méthodes d'ap
 
 Le OneHotEncode (OHE) a pour objectif d'encoder les variables catégorielles en une matrice unitaire.
 
-#### Exemple
+##### Exemple
 
 On observe 4 individus en notant leur sexe et la nature de leur contrat de travail:
 
@@ -250,6 +251,12 @@ On observe 4 individus en notant leur sexe et la nature de leur contrat de trava
 .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
 </style>
 ```
+| sex | Type de contrat de travail |
+|-----|----------------------------|
+| F   | CDI                        |
+| M   | CDD                        |
+| M   | Intérimaire                |
+| F   | CDI                        |
 
 Après passage dans le OneHotEncoder, on obtient la matrice suivante:
 
@@ -263,6 +270,12 @@ Après passage dans le OneHotEncoder, on obtient la matrice suivante:
 .tg .tg-0lax{text-align:left;vertical-align:top}
 </style>
 ```
+| sex_F | sex_M | TDCT_CDI | TDCT_CDD | TDCT_Intérimaire |
+|-------|-------|----------|----------|------------------|
+| 1     | 0     | 1        | 0        | 0                |
+| 0     | 1     | 0        | 1        | 0                |
+| 0     | 1     | 0        | 0        | 1                |
+| 1     | 0     | 1        | 0        | 0                |
 
 Maintenant, nous pouvons appliquer des opérations mathématiques sur la matrice obtenue, comme calculer des effectifs de façon simple ou des distances entre les individus. Cependant, le OneHotEncoder présente un inconvénient majeur, car il augmente énormément le nombre de colonnes de la matrice de base si les variables contiennent beaucoup de catégories.
 
@@ -281,31 +294,90 @@ Les forêts aléatoires reposent sur la construction d'arbres de décision de ma
 3.  Réduction de la corrélation : L'une des forces de la forêt aléatoire est de grandement limiter la corrélation, car chaque arbre est entraîné sur une petite partie du jeu de données.
 
 ## Mise en place des méthodes
+
+### Python
+
 Python étant actuellement un langage de référence dans le monde du machine learning, il existe un package bien pratique contenant tous les outils nécessaires à l'apprentissage supervisé. Ce package est Scikit-learn. Pour bien fonctionner, il s'appuie sur le package NumPy qui permet de manipuler les objets mathématiques de base.
 
-### Difficultés
+#### Difficultés
 
 Nous n'avons pas rencontré de difficultés particulières avec l'utilisation de ces packages en raison de notre familiarité avec ces manipulations. Le gros avantage de Python par rapport à Julia est que le langage est assez permissif en ce qui concerne la structure des données au niveau du prétraitement et que toutes les fonctionnalités sont incorporées dans un seul package, contrairement à Julia, comme nous le détaillerons par la suite.
 
-## Julia
+### Julia
 
 Julia étant un langage de programmation plus jeune que Python, la partie machine learning n'est pas simple à prendre en main en tant qu'utilisateur. Nous détaillerons par la suite les difficultés rencontrées. Cependant, le package MLJ.jl me paraît très prometteur car il essaye de réunir toutes les fonctionnalités de machine learning, tout comme le fait Scikit-learn (qui possède une version Julia qui n'est pas encore à la hauteur selon moi).
 
-### Difficultés
+#### Difficultés
 
-#### OneHotEncoder
+##### OneHotEncoder
 
 Dans un premier temps, contrairement à Python, le OHE de MLJ.jl ne nous a pas permis de transformer un vecteur (individu à prédire) en utilisant la fonction transform, qui devrait normalement fonctionner après avoir adapté notre modèle aux données. Pour remédier à ce problème, nous avons choisi d'ajouter l'individu à prédire en dernière place des données à transformer via le OHE, en utilisant la fonction fit!. Une autre difficulté a été de mettre les dataframes au bon format pour pouvoir utiliser le OHE. Pour cela, nous avons utilisé la fonction coerce, qui permet de transformer les colonnes de type String64 en Multiclass, ce type étant pris en charge par notre OHE.
 
-#### K-Nearest Neighbour
+##### K-Nearest Neighbour
 
 Pour utiliser la prédiction via un KNN en plus du package MLJ.jl, nous avons aussi utilisé NearestNeighbors. Pas de difficulté particulière, sauf un petit problème sur une transposition de matrice qui augmentait grandement le temps de calcul. On passait du calcul de normes dans (\mathbb{R}\^{60}) à une norme dans (\mathbb{R}\^{7300}), ce qui explique pourquoi la matrice de distance prenait presque 1h à être calculée.
 
-#### RandomForest
+##### RandomForest
 
 La méthode qui nous aura pris le plus de temps à mettre en œuvre est le RandomForest, car le package MLJ propose plusieurs implantations de RandomForest provenant de packages variés. Dans un premier temps, nous avons testé avec l'interface de Scikit-learn, mais elle appelait Python en interne, ce qui perd de l'intérêt pour notre comparaison. Nous avons donc opté pour la librairie DecisionTree, qui était disponible dans les modèles. Cependant, nous avons rencontré quelques petites difficultés comme .fit et .predict qui sont définis dans les deux packages, ce qui produisait l'erreur "MethodError: no method matching" alors que l'on utilisait les mêmes types que ceux spécifiés dans la documentation. Pour remédier à ce problème, nous avons simplement remplacé .fit et .predict par DecisionTree.fit et DecisionTree.predict quand cela était nécessaire.
 
+## Packages
 
+Pour faciliter la partie prédiction, j'ai choisi de créer trois packages. Le premier est un package Julia qui gère l'ensemble du prétraitement ainsi que la création des modèles de prédiction. Quant aux deux packages R, ils servent principalement à faciliter l'utilisation de Python et Julia à travers l'interface Shiny.
+
+### JuliaPredict (Julia package)
+
+On peut trouver le package JuliaPredict sur Github [ici](https://github.com/RobinChaussemy/JuliaPredict.jl).
+
+Le package JuliaPredict est composé de plusieurs fichiers pour implémenter différentes fonctions :
+
+Dans le fichier Data.jl, on trouve deux méthodes. La première, get_data(), permet de récupérer le dataset préalablement téléchargé sur Dropbox. La seconde fonction, get_indiv(), renvoie un individu de test pour permettre de tester les différentes fonctions de prédiction.
+
+Le fichier Encoder.jl contient une méthode permettant de transformer notre DataFrame en une matrice utilisable pour la prédiction en utilisant le OneHotEncoder présent dans le package MLJ.jl.
+
+Les fichiers ForestPrediction.jl et KNNPrediction.jl permettent d'implémenter les deux types de prédiction et retournent les résultats sous la forme d'un vecteur contenant le temps mis pour la prédiction et les probabilités d'appartenance à chaque classe.
+
+### PredictionJulia (Package R)
+
+Le package [PredictionJulia](https://github.com/RobinChaussemy/PredictionJulia) (package bricolage) utilise la librairie jl4R pour interpréter des commandes Julia grâce à la fonction `jl("exp")`, où "exp" est une expression Julia à évaluer. Le principal problème que j'ai rencontré dans la mise en place du package est de minimiser l'expression que je rentre dans la fonction `jl()`. Pour cela, j'ai créé des sous-fonctions. On va partir du code présent dans le package pour expliquer les difficultés rencontrées.
+
+````{r,eval = FALSE}
+RandomForest_Julia <- function(sommet,saison,nationalite,role,annee,sexe,age,pro,solo,oxygene,mort=0,blesse=0,ntree = 5){
+  RandomForest_result <- jl4R::jl(paste0("JuliaPredict.Tree_Process(JuliaPredict.get_data(),",c_indiv(string_process(sommet),string_process(saison),string_process(nationalite),string_process(role),str_to_int(annee),strbool_to_int(sexe),str_to_int(age),strbool_to_int(pro),strbool_to_int(solo),strbool_to_int(oxygene),mort,blesse),",",ntree,")"))
+  return(list(prediction = R(RandomForest_result[1]), proba_f = R(RandomForest_result[2]),proba_s = R(RandomForest_result[3]),temps = R(RandomForest_result[4])))
+}
+````
+Les deux difficultés rencontrées proviennent du fait qu'il fallait créer une chaîne de caractères importante, sachant que certains paramètres sont eux-mêmes des chaînes de caractères. Pour résoudre ce problème, j'ai implémenté une fonction qui applique la transformation suivante : "texte" vers "\"texte\"". Car avec cette "astuce", la fonction `paste0` permet de mettre des chaînes de caractères dans une autre chaîne de caractères, qui elle-même est interprétée dans le package Julia. Les fonctions `strbool_to_int` permettent de transformer les "false" en 0 et les "true" en 1. Quant à la fonction `str_to_int`, elle convertit des chaînes de caractères en entiers.
+
+Je vais appliqué l'exemple à l'individu `"Ama Dablam","Autumn","France","Climber",2025,1,25,0,0,1` dans un premier temps pour la random Forest:
+
+```{r,echo=FALSE}
+source("R/example.R")
+exemple_julia_forest()
+```
+
+Dans un second temps pour KNN:
+```{r,echo=FALSE}
+source("R/example.R")
+exemple_julia_knn()
+```
+
+On observe que le retour de la fonction KNN est un peu différent. Elle renvoie uniquement le temps de prédiction et la probabilité de succès. Ceci est dû au fait que le package `NearestNeighbors.jl` ne possède pas toutes les fonctionnalités de résultats classiques de prédiction. J'ai donc dû créer une version faite maison.
+
+### PredictionPython (Package R)
+
+Le package [PredictionPython](https://github.com/RobinChaussemy/PredictionPython) utilise la librairie reticulate pour charger l'environnement virtuel précédemment créé. Il charge également le fichier main.py contenu dans le dossier Python. 
+Le package comporte 2 fonctions, la première `KNN_Python`, qui appelle la fonction `KNN_Process(data, indiv, n, p)` du fichier main.py, où data est un DataFrame, individu à prédire, n correspond au nombre de voisins utilisés pour la prédiction, quant au paramètre p, il correspond à la norme p de $\mathbb R^n$. Pour l'exemple, on appelle la fonction de la manière suivante : `KNN_Python(c("Ama Dablam","Autumn","France","Climber",2025,1,25,0,0,1,0,0), n = 1000 , p = 2)`.
+```{r,echo=FALSE}
+source("R/example.R")
+exemple_python_knn()
+
+```
+La seconde fonction est `RandomForest_Python`, elle appelle la fonction `Tree_Process(data, indiv, n)` du fichier main.py. Ici, data représente un DataFrame, indiv est l'individu à prédire, et n correspond au nombre d'arbres utilisés dans la forêt aléatoire. Pour l'exemple, on appelle la fonction de la manière suivante : `RandomForest_Python(c("Ama Dablam","Autumn","France","Climber",2025,1,25,0,0,1,0,0), n = 100)`.
+```{r,echo=FALSE}
+setwd(paste0(getwd(),"/R"))
+exemple_python_forest()
+```
 
 # Interface Shiny
 ## Objectif de l'interface
@@ -476,6 +548,7 @@ Pour permettre de rendre plus aisé la compréhension du code de mon application
 
 - *scindeR*
 - *compaR*  
+
 
 ### scindeR
 Ce package très simpliste permet de scinder une data selon les types de variables.  

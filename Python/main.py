@@ -69,14 +69,14 @@ def PredictForest(data,X,indiv,n_arbre = 100):
     prob_predi = random_forest.predict_proba(indiv)
     return [res_predi[0],prob_predi[0][0],prob_predi[0][1]]
 
-def KNN_Process(data,indiv,y,p=3,n=11):
+def KNN_Process(data,indiv,y,p=3,n=1000):
     t0 = tm.time()
     process = EncodeData(data, indiv)
     res_predict = PredictKNN(process[1], process[0], y,p,n)
     res_predict.append(tm.time()-t0)
     return res_predict
 
-def Tree_Process(data,indiv,n=2):
+def Tree_Process(data,indiv,n=100):
     t0 = tm.time()
     process = EncodeData(data, indiv)
     res_predict = PredictForest(data,process[0], process[1],n)
