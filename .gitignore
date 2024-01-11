@@ -4,7 +4,7 @@
 .Rdata
 .idea
 .Rhistory
-./Python/venv/
+Python/venv/
 _extensions
 chunk-code-504e4abcde65.log
 presentation_projet_cache
